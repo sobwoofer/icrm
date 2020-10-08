@@ -1,0 +1,56 @@
+version: '3.7'
+services:
+  nginx:
+    build:
+      context: ./
+      dockerfile: docker/nginx.docker
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - php-fpm
+      - php-cli
+      - mysql
+      - redis
+  php-fpm:
+    build:
+      context: ./
+      dockerfile: docker/php-fpm.docker
+    volumes:
+      - ./:/var/www
+
+    environment:
+      DB_PORT: "3306"
+      DB_HOST: "mysql"
+      REDIS_PORT: "6379"
+      REDIS_HOST: "redis"
+      PHP_IDE_CONFIG: "serverName=docker"
+      XDEBUG_CONFIG: "remote_port=9000 remote_host=172.17.0.1 remote_enable=1"
+  php-cli:
+    build:
+      context: ./
+      dockerfile: docker/php-cli.docker
+    volumes:
+      - ./:/var/www
+    env_file:
+      - docker-compose.env
+    environment:
+      DB_PORT: "3306"
+      DB_HOST: "mysql"
+      REDIS_PORT: "6379"
+      REDIS_HOST: "redis"
+      ELASTICSEARCH_HOSTS: "elasticsearch:9200"
+      PHP_IDE_CONFIG: "serverName=docker"
+      XDEBUG_CONFIG: "remote_port=9000 remote_host=172.17.0.1 remote_enable=1"
+    tty: true
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - ./docker/volumes/mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "secret"
+      MYSQL_USER: "app"
+      MYSQL_PASSWORD: "secret"
+      MYSQL_DATABASE: "app"
+  redis:
+    image: redis:3.0

@@ -15,7 +15,7 @@ class CreatedPriceOptionTable extends Migration
     {
         Schema::create('price_option', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name');
+            $table->string('name')->index();
             $table->float('price');
             $table->bigInteger('product_id')->unsigned()->index();
             $table->foreign('product_id')->references('id')->on('product')->onDelete('cascade');

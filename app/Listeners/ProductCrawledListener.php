@@ -2,7 +2,6 @@
 
 namespace App\Listeners;
 
-use App\Eloquent\Product\Image;
 use App\Eloquent\Product\PriceOption;
 use App\Eloquent\Product\Product;
 use App\Events\ProductCrawled;
@@ -20,7 +19,68 @@ class ProductCrawledListener
      */
     public function handle(ProductCrawled $event)
     {
-        $product = new Product();
+        /** @var Product $product */
+        if ($product = $this->getProduct($event->article)){
+            $this->fillAndSaveProduct($product, $event);
+
+            if ($event->priceOptions) {
+                $this->updatePriceOptions($product, $event->priceOptions);
+            }
+        } else {
+            $product = $this->fillAndSaveProduct(new Product(), $event);
+
+            if ($event->priceOptions) {
+                $this->createPriceOptions($product, $event->priceOptions);
+            }
+        }
+    }
+
+    /**
+     * @param Product $product
+     * @param array $eventPriceOptions
+     */
+    private function updatePriceOptions(Product $product, array $eventPriceOptions)
+    {
+        foreach ($eventPriceOptions as $priceOptionArray) {
+            $foundOption = false;
+            foreach ($product->priceOptions as $priceOption) {
+                if ($priceOptionArray['name'] === $priceOption->name) {
+                    $priceOption->price = $priceOptionArray['price'];
+                    $priceOption->save();
+                    $foundOption = true;
+                    break;
+                }
+            }
+            if (!$foundOption) {
+                $this->createPriceOptions($product, [$priceOptionArray]);
+            }
+        }
+    }
+
+    /**
+     * @param Product $product
+     * @param array $productOptions
+     */
+    private function createPriceOptions(Product $product, array $productOptions)
+    {
+        foreach ($productOptions as $priceOptionArray) {
+            $priceOption = new PriceOption();
+            $priceOption->name = $priceOptionArray['name'];
+            $priceOption->price = $priceOptionArray['price'];
+            $priceOption->product_id = $product->id;
+            $priceOption->save();
+        }
+    }
+
+    /**
+     * save() will check if something in the model has changed.
+     * If it hasn't it won't run a db query.
+     * @param Product $product
+     * @param ProductCrawled $event
+     * @return Product
+     */
+    private function fillAndSaveProduct(Product $product, ProductCrawled $event): Product
+    {
         $product->name = $event->name;
         $product->description = $event->description;
         $product->url = $event->url;
@@ -30,20 +90,11 @@ class ProductCrawledListener
         $product->category_id = $event->categoryId;
         $product->save();
 
-        foreach ($event->images as $url) {
-            $image = new Image();
-            $image->url = $url;
-            $image->product_id = $product->id;
-            $image->save();
-        }
+        return $product;
+    }
 
-        foreach ($event->priceOptions as $priceOptionArray) {
-            $priceOption = new PriceOption();
-            $priceOption->name = $priceOptionArray['name'];
-            $priceOption->price = $priceOptionArray['price'];
-            $priceOption->product_id = $product->id;
-            $priceOption->save();
-        }
-
+    private function getProduct(string $article)
+    {
+        return Product::query()->where('article', $article)->first();
     }
 }

@@ -54,10 +54,10 @@ class CrawlVendors extends Command
 
             switch ($vendor->slug) {
                 case Vendor::SLUG_COMEFOR:
-//                    $this->comeforCrawler->crawl($vendor->categories);
+                    $this->comeforCrawler->crawl($vendor->categories);
                     break;
                 case Vendor::SLUG_EMM:
-//                    $this->emmCrawler->crawl($vendor->categories);
+                    $this->emmCrawler->crawl($vendor->categories);
                     break;
                 case Vendor::SLUG_MATROLUX:
                     $this->matroluxCrawler->crawl($vendor->categories);

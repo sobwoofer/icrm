@@ -12,6 +12,11 @@ use Symfony\Component\DomCrawler\Crawler;
 class ComeforCrawler extends CrawlerAbstract
 {
 
+    /**
+     * @param string $url
+     * @param int $categoryId
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     protected function crawlProductByUrl(string $url, int $categoryId): void
     {
         $crawler = $this->crawlUrl($url);

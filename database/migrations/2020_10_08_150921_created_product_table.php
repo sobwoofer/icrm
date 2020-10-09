@@ -20,7 +20,7 @@ class CreatedProductTable extends Migration
             $table->string('url');
             $table->string('image_url')->nullable();
             $table->float('price')->nullable();
-            $table->string('article')->nullable();
+            $table->string('article')->nullable()->index();
             $table->bigInteger('category_id')->unsigned()->index();
             $table->foreign('category_id')->references('id')->on('category')->onDelete('cascade');
             $table->timestamp('created_at')->useCurrent();

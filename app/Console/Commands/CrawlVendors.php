@@ -44,11 +44,10 @@ class CrawlVendors extends Command
     public function handle(): void
     {
         $vendors = Vendor::query()->get();
-        $items = [];
 
         /** @var Vendor $vendor */
         foreach ($vendors as $vendor) {
-            $message = 'crawling filter id ' . $vendor->id. PHP_EOL;
+            $message = 'crawling vendor ' . $vendor->name. PHP_EOL;
             $this->info($message);
             Log::info($message);
 
@@ -64,17 +63,10 @@ class CrawlVendors extends Command
                     break;
             }
 
-            $message = 'crawled items ' . count($items). PHP_EOL;
+            $message = 'crawled ' . $vendor->name . PHP_EOL;
             $this->info($message);
             Log::info($message);
         }
-    }
-
-
-
-    private function crawlEmm(): array
-    {
-        return [];
     }
 
 }

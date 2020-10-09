@@ -2,11 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Eloquent\Product\Image;
-use App\Eloquent\Product\PriceOption;
-use App\Eloquent\Product\Product;
 use App\Eloquent\Product\Vendor;
 use App\Services\Crawlers\ComeforCrawler;
+use App\Services\Crawlers\EmmCrawler;
+use App\Services\Crawlers\MatroluxCrawler;
 use Illuminate\Console\Command;
 use Log;
 
@@ -14,6 +13,8 @@ use Log;
  * Class CrawlVendors
  * @package App\Console\Commands
  * @property ComeforCrawler $comeforCrawler
+ * @property EmmCrawler $emmCrawler
+ * @property MatroluxCrawler $matroluxCrawler
  */
 class CrawlVendors extends Command
 {
@@ -22,10 +23,18 @@ class CrawlVendors extends Command
     protected $description = 'Command description';
 
     private $comeforCrawler;
+    private $emmCrawler;
+    private $matroluxCrawler;
 
-    public function __construct(ComeforCrawler $comeforCrawler)
+    public function __construct(
+        ComeforCrawler $comeforCrawler,
+        EmmCrawler $emmCrawler,
+        MatroluxCrawler $matroluxCrawler
+    )
     {
         $this->comeforCrawler = $comeforCrawler;
+        $this->emmCrawler = $emmCrawler;
+        $this->matroluxCrawler = $matroluxCrawler;
         parent::__construct();
     }
 
@@ -45,9 +54,13 @@ class CrawlVendors extends Command
 
             switch ($vendor->slug) {
                 case Vendor::SLUG_COMEFOR:
-                    $this->comeforCrawler->crawl($vendor->categories);
+//                    $this->comeforCrawler->crawl($vendor->categories);
                     break;
                 case Vendor::SLUG_EMM:
+//                    $this->emmCrawler->crawl($vendor->categories);
+                    break;
+                case Vendor::SLUG_MATROLUX:
+                    $this->matroluxCrawler->crawl($vendor->categories);
                     break;
             }
 

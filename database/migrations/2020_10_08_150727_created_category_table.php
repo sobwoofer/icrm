@@ -15,7 +15,7 @@ class CreatedCategoryTable extends Migration
     {
         Schema::create('category', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('name');
+            $table->string('name');
             $table->string('url');
             $table->bigInteger('vendor_id')->unsigned()->index();
             $table->bigInteger('parent_id')->unsigned()->index()->nullable();

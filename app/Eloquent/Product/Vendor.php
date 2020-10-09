@@ -18,6 +18,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Vendor extends Model
 {
+    public const SLUG_COMEFOR = 'comefor';
+    public const SLUG_EMM = 'emm';
+
     protected $table = 'vendor';
     protected $fillable = ['name', 'slug', 'site_url'];
 

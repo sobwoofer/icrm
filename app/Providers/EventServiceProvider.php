@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Events\FreshItemsFound;
+use App\Events\ProductCrawled;
 use App\Events\States\AddFilter;
 use App\Events\FirstFilterCrawled;
 use App\Events\States\Hunting;
@@ -13,7 +13,7 @@ use App\Events\States\ShowFilters;
 use App\Events\States\Start;
 use App\Events\States\StopFilter;
 use App\Listeners\FirstFilterCrawledListener;
-use App\Listeners\FreshItemsFoundListener;
+use App\Listeners\ProductCrawledListener;
 use App\Listeners\States\AddFilterListener;
 use App\Listeners\States\HuntingListener;
 use App\Listeners\States\InfoListener;
@@ -40,6 +40,9 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+        ProductCrawled::class => [
+            ProductCrawledListener::class,
         ],
     ];
 

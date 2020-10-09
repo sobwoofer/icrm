@@ -16,7 +16,7 @@ class CreatedVendorTable extends Migration
         Schema::create('vendor', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->string('slug')->nullable();
+            $table->string('slug');
             $table->string('site_url');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));

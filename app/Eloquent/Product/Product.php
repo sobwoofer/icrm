@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $image_url
  * @property float $price
  * @property string $article
+ * @property int $category_id
  * @property Category $category
  * @property PriceOption[] $priceOptions
  * @property Image[] $images

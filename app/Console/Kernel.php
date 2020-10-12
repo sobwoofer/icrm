@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use App\Console\Commands\CrawlFilters;
+use App\Console\Commands\CrawlVendors;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-//        CrawlFilters::class,
+        CrawlVendors::class,
     ];
 
     /**
@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-//        $schedule->command('crawl-filters')->twiceDaily(5, 18);
+        $schedule->command('crawl-vendors')->daily();
     }
 
     /**

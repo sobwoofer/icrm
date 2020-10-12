@@ -4,6 +4,7 @@ return [
     'name' => 'Dealer product Crawler',
     'custom_url_segment' => 'admin',
     'entities' => [
+
         'vendor' => [
             'list' => \App\Sharp\Entities\Vendor\ListVendor::class,
             'show' => \App\Sharp\Entities\Vendor\ShowVendor::class,
@@ -24,12 +25,23 @@ return [
         ]
 
     ],
+    'dashboards' => [
+        'company_dashboard' => [
+            "view" => \App\Sharp\CompanyDashboard::class,
+//            "policy" => \App\Sharp\Policies\CompanyDashboardPolicy::class,
+        ],
+    ],
     'auth' => [
         'login_attribute' => 'email',
         'password_attribute' => 'password',
         'display_attribute' => 'name',
     ],
     'menu' => [
+        [
+            "label" => "Dashboard",
+            "icon" => "fa-tachometer-alt",
+            "dashboard" => "company_dashboard"
+        ],
         [
             'label' => 'Vendor',
             'icon' => 'fa-superpowers',

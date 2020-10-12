@@ -2,6 +2,7 @@
 
 namespace App\Services\Crawlers;
 
+use App\Eloquent\CrawlStat;
 use App\Eloquent\Product\Category;
 use App\Services\ProxyService;
 use Symfony\Component\DomCrawler\Crawler;
@@ -26,11 +27,12 @@ class CrawlerAbstract
 
     /**
      * @param $categories
-     * @return array
+     * @return int
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function crawl($categories): void
+    public function crawl($categories): int
     {
+        $crawled = 0;
         /** @var Category $category */
         foreach ($categories as $category) {
             $productLinks = $this->getProductLinksByCategoryUrl($category->url);
@@ -38,12 +40,15 @@ class CrawlerAbstract
             foreach ($productLinks as $productLink) {
                 try {
                     $this->crawlProductByUrl($productLink, $category->id);
+                    $crawled++;
                 } catch (Exception $e) {
                     Log::error('cant_parse_product: ' . $productLink . ' | ' . $e->getMessage());
                 }
                 sleep(self::SLEEP_BETWEEN_REQUESTS);
             }
         }
+
+        return $crawled;
     }
 
     /**

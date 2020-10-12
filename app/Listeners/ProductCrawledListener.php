@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Eloquent\CrawlStat;
 use App\Eloquent\Product\PriceOption;
 use App\Eloquent\Product\Product;
 use App\Events\ProductCrawled;
@@ -73,6 +74,16 @@ class ProductCrawledListener
     }
 
     /**
+     * @return CrawlStat
+     */
+    private function getLastCrawlStat(): CrawlStat
+    {
+        /** @var CrawlStat $crawlStat */
+        $crawlStat =  CrawlStat::query()->orderBy('created_at', 'desc')->first();
+        return $crawlStat;
+    }
+
+    /**
      * save() will check if something in the model has changed.
      * If it hasn't it won't run a db query.
      * @param Product $product
@@ -88,6 +99,14 @@ class ProductCrawledListener
         $product->article = $event->article;
         $product->price = $event->price;
         $product->category_id = $event->categoryId;
+
+        if ($product->getDirty()) {
+            if ($product->id) {
+                $this->getLastCrawlStat()->incrUpdated();
+            } else {
+                $this->getLastCrawlStat()->incrCreated();
+            }
+        }
         $product->save();
 
         return $product;

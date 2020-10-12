@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Eloquent\CrawlStat;
 use App\Eloquent\Product\Vendor;
 use App\Services\Crawlers\ComeforCrawler;
 use App\Services\Crawlers\EmmCrawler;
@@ -44,29 +45,40 @@ class CrawlVendors extends Command
     public function handle(): void
     {
         $vendors = Vendor::query()->get();
+        $crawlStat = CrawlStat::create();
 
         /** @var Vendor $vendor */
         foreach ($vendors as $vendor) {
-            $message = 'crawling vendor ' . $vendor->name. PHP_EOL;
-            $this->info($message);
-            Log::info($message);
+            $this->log($vendor->name, 'start');
 
+            $crawledProducts = 0;
             switch ($vendor->slug) {
                 case Vendor::SLUG_COMEFOR:
-                    $this->comeforCrawler->crawl($vendor->categories);
+                    $crawledProducts = $this->comeforCrawler->crawl($vendor->categories);
                     break;
                 case Vendor::SLUG_EMM:
-                    $this->emmCrawler->crawl($vendor->categories);
+                    $crawledProducts = $this->emmCrawler->crawl($vendor->categories);
                     break;
                 case Vendor::SLUG_MATROLUX:
-                    $this->matroluxCrawler->crawl($vendor->categories);
+                    $crawledProducts = $this->matroluxCrawler->crawl($vendor->categories);
                     break;
             }
 
-            $message = 'crawled ' . $vendor->name . PHP_EOL;
-            $this->info($message);
-            Log::info($message);
+            $crawlStat->incrCrawled($crawledProducts);
+
+            $this->log($vendor->name, 'crawled');
         }
+    }
+
+    /**
+     * @param string $vendorName
+     * @param string $message
+     */
+    protected function log(string $vendorName, $message = '')
+    {
+        $message = $message . '_' . $vendorName . PHP_EOL;
+        $this->info($message);
+        Log::info($message);
     }
 
 }

@@ -18,7 +18,11 @@ return [
         ],
         'priceOption' => [
             'list' => \App\Sharp\Entities\PriceOption\ListPriceOption::class,
+        ],
+        'image' => [
+            'list' => \App\Sharp\Entities\Image\ListImage::class,
         ]
+
     ],
     'auth' => [
         'login_attribute' => 'email',

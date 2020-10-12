@@ -22,7 +22,7 @@ class ShowProduct extends SharpShow
     public function find($id): array
     {
         // Replace/complete this code
-        $item = Product::query()->findOrFail($id);
+        $item = Product::query()->with('images')->findOrFail($id);
 
         $this->setCustomTransformer('description', new MarkdownAttributeTransformer());
 
@@ -67,6 +67,14 @@ class ShowProduct extends SharpShow
              SharpShowTextField::make('updated_at')
                  ->setLabel('Updated At:')
          )->addField(
+             SharpShowEntityListField::make('image', 'image')
+                 ->hideFilterWithValue('product', function($instanceId) {
+                     return $instanceId;
+                 })
+                 ->showEntityState(false)
+                 ->showReorderButton(true)
+                 ->showCreateButton()
+         )->addField(
              SharpShowEntityListField::make('priceOptions', 'priceOption')
                  ->hideFilterWithValue('product', function($instanceId) {
                      return $instanceId;
@@ -98,7 +106,8 @@ class ShowProduct extends SharpShow
                   $column->withSingleField('created_at');
                   $column->withSingleField('updated_at');
               });
-         })->addEntityListSection('priceOptions', 'priceOptions');
+         })->addEntityListSection('price Options', 'priceOptions')
+             ->addEntityListSection('Images', 'image');
     }
 
     function buildShowConfig()

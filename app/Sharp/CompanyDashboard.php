@@ -144,7 +144,7 @@ class CompanyDashboard extends SharpDashboard
                 ->leftJoin('category', 'product.category_id', '=', 'category.id')
                 ->leftJoin('vendor', 'category.vendor_id', '=', 'vendor.id')
                 ->where('product.updated_at', '>', $this->getLastWeekTime())
-                ->where('vendor.name', Vendor::SLUG_COMEFOR)
+                ->where('vendor.slug', Vendor::SLUG_COMEFOR)
                 ->count()]
         )->setPanelData(
             'createdComefor', ['count' => Product::query()

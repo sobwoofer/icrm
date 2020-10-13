@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Eloquent\CrawlStat;
+use App\Eloquent\Product\Image;
 use App\Eloquent\Product\PriceOption;
 use App\Eloquent\Product\Product;
 use App\Events\ProductCrawled;
@@ -33,6 +34,24 @@ class ProductCrawledListener
             if ($event->priceOptions) {
                 $this->createPriceOptions($product, $event->priceOptions);
             }
+
+            if ($event->images) {
+                $this->createImages($product, $event->images);
+            }
+        }
+    }
+
+    /**
+     * @param Product $product
+     * @param array $images
+     */
+    private function createImages(Product $product, array $images)
+    {
+        foreach ($images as $image) {
+            $imageModel = new Image();
+            $imageModel->url = $image;
+            $imageModel->product_id = $product->id;
+            $imageModel->save();
         }
     }
 

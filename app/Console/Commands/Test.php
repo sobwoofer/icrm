@@ -59,7 +59,7 @@ class Test extends Command
      */
     public function handle()
     {
-        $productLink  = 'https://matroluxe.com/namatrasnik-natyazhnoy-roll-top';
+        $productLink  = 'https://matroluxe.com/ru/matras-topper-futon-5';
         $this->matroluxCrawler->crawlProductByUrl($productLink, 22);
 
 

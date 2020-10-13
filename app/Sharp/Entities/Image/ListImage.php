@@ -53,7 +53,7 @@ class ListImage extends SharpEntityList
     public function buildListLayout()
     {
         $this->addColumn('id', 1)
-            ->addColumn('url',  4)
+            ->addColumn('url',  5)
             ->addColumn('product_id', 2)
             ->addColumn('created_at', 2)
             ->addColumn('updated_at', 2);

@@ -166,7 +166,7 @@ class CompanyDashboard extends SharpDashboard
                 ->leftJoin('category', 'product.category_id', '=', 'category.id')
                 ->leftJoin('vendor', 'category.vendor_id', '=', 'vendor.id')
                 ->where('product.updated_at', '>', $this->getLastWeekTime())
-                ->where('vendor.slug', Vendor::SLUG_MATROLUX)
+                ->where('vendor.slug', Vendor::SLUG_EMM)
                 ->count()]
         );
         $this->setPanelData(

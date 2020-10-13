@@ -28,4 +28,13 @@ class PriceOption extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function save(array $options = [])
+    {
+        $savingResult = parent::save($options);
+
+        $this->product->setUpdatedAt(date('Y-m-d H:i:s'))->save();
+
+        return $savingResult;
+    }
 }

@@ -46,7 +46,7 @@ class MatroluxCrawler extends CrawlerAbstract
      * @param int $categoryId
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    protected function crawlProductByUrl(string $url, int $categoryId): void
+    public function crawlProductByUrl(string $url, int $categoryId): void
     {
         $crawler = $this->crawlUrl($url);
 
@@ -60,11 +60,30 @@ class MatroluxCrawler extends CrawlerAbstract
             return urldecode($node->filter('a')->attr('href'));
         });
 
-        $priceOptions = $crawler->filter('#configurableParams select#size option')->each(function (Crawler $node) {
+        //options manipulations
+        $priceOptions = $crawler->filter('#configurableParams select#size option, #configurableParams select.select-param option')->each(function (Crawler $node) {
             $name = trim($node->text());
             $price = $node->attr('data-price');
             return ['name' => $name, 'price' => $price];
         });
+
+        $optionPricesNull = 0;
+        foreach ($priceOptions as $priceOption) {
+            if ($priceOption['price'] === null) {
+                $optionPricesNull++;
+            }
+        }
+
+        $optionsWithoutPrice = $optionPricesNull === count($priceOptions);
+        $priceVariantsExists = count($priceOptions) === $crawler->filter('#productCardPrice .price .price-variant')->count();
+
+        if ($optionsWithoutPrice && $priceVariantsExists) {
+            $priceOptions = $crawler->filter('#productCardPrice .price .price-variant')->each(function (Crawler $node, $i) use ($priceOptions) {
+                $price = trim(str_replace(['грн', ' '],'', $node->text()));
+                return ['name' => $priceOptions[$i]['name'], 'price' => $price];
+            });
+        }
+        //options manipulations
 
         event(new ProductCrawled($name, $description, $url, $imageUrl, $article, $price, $images, $priceOptions, $categoryId));
     }

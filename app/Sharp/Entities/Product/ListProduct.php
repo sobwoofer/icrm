@@ -42,11 +42,11 @@ class ListProduct extends SharpEntityList
                 ->setSortable()
         )->addDataContainer(
             EntityListDataContainer::make('created_at')
-                ->setLabel('cr_at')
+                ->setLabel('created_at')
                 ->setSortable()
         )->addDataContainer(
             EntityListDataContainer::make('updated_at')
-                ->setLabel('upd_at')
+                ->setLabel('updated_at')
                 ->setSortable()
         );
     }

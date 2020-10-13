@@ -75,7 +75,7 @@ class ListCategory extends SharpEntityList
         $this->setInstanceIdAttribute('id')
             ->setSearchable()
             ->setDefaultSort('name', 'asc')
-            ->addFilter('vendors', VendorFilter::class)
+            ->addFilter('vendor', VendorFilter::class)
             ->setPaginated();
     }
 

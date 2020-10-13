@@ -28,23 +28,23 @@ class CompanyDashboard extends SharpDashboard
                 ->setTitle('Crawling progress stat')
         )->addWidget(
             SharpPanelWidget::make('updatedComefor')
-                ->setInlineTemplate("<h1>{{count}}</h1> Updated Products ComeFor")
+                ->setInlineTemplate("<h1>{{count}}</h1> Updated Products ComeFor for last week")
 //                ->setLink('product')
         )->addWidget(
             SharpPanelWidget::make('createdComefor')
-                ->setInlineTemplate("<h1>{{count}}</h1> Created Products ComeFor")
+                ->setInlineTemplate("<h1>{{count}}</h1> Created Products ComeFor for last week")
         )->addWidget(
             SharpPanelWidget::make('updatedEMM')
-                ->setInlineTemplate("<h1>{{count}}</h1> Updated Products EMM")
+                ->setInlineTemplate("<h1>{{count}}</h1> Updated Products EMM for last week")
         )->addWidget(
             SharpPanelWidget::make('createdEMM')
-                ->setInlineTemplate("<h1>{{count}}</h1> Created Products EMM")
+                ->setInlineTemplate("<h1>{{count}}</h1> Created Products EMM for last week")
         )->addWidget(
             SharpPanelWidget::make('updatedMatrolux')
-                ->setInlineTemplate("<h1>{{count}}</h1> Updated Products Matrolux")
+                ->setInlineTemplate("<h1>{{count}}</h1> Updated Products Matrolux for last week")
         )->addWidget(
             SharpPanelWidget::make('createdMatrolux')
-                ->setInlineTemplate("<h1>{{count}}</h1> Created Products Matrolux")
+                ->setInlineTemplate("<h1>{{count}}</h1> Created Products Matrolux for last week")
         )->addWidget(
             SharpOrderedListWidget::make('topTravelledSpaceshipModels')
                 ->setTitle('Updated products by last 7 days')

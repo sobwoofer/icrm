@@ -4,6 +4,7 @@ namespace App\Sharp;
 
 use App\Eloquent\CrawlStat;
 use App\Eloquent\Product\Product;
+use App\Eloquent\Product\Vendor;
 use Code16\Sharp\Dashboard\DashboardQueryParams;
 use Code16\Sharp\Dashboard\Layout\DashboardLayoutRow;
 use Code16\Sharp\Dashboard\SharpDashboard;
@@ -20,21 +21,37 @@ class CompanyDashboard extends SharpDashboard
     function buildWidgets()
     {
         $this->addWidget(
-            SharpPieGraphWidget::make("capacities_pie")
+            SharpPieGraphWidget::make('capacities_pie')
                 ->setTitle('Created\Updated last 7 days')
         )->addWidget(
-            SharpLineGraphWidget::make("capacities")
+            SharpLineGraphWidget::make('capacities')
                 ->setTitle('Crawling progress stat')
         )->addWidget(
-            SharpOrderedListWidget::make("topTravelledSpaceshipModels")
+            SharpPanelWidget::make('updatedComefor')
+                ->setInlineTemplate("<h1>{{count}}</h1> Updated Products ComeFor")
+//                ->setLink('product')
+        )->addWidget(
+            SharpPanelWidget::make('createdComefor')
+                ->setInlineTemplate("<h1>{{count}}</h1> Created Products ComeFor")
+        )->addWidget(
+            SharpPanelWidget::make('updatedEMM')
+                ->setInlineTemplate("<h1>{{count}}</h1> Updated Products EMM")
+        )->addWidget(
+            SharpPanelWidget::make('createdEMM')
+                ->setInlineTemplate("<h1>{{count}}</h1> Created Products EMM")
+        )->addWidget(
+            SharpPanelWidget::make('updatedMatrolux')
+                ->setInlineTemplate("<h1>{{count}}</h1> Updated Products Matrolux")
+        )->addWidget(
+            SharpPanelWidget::make('createdMatrolux')
+                ->setInlineTemplate("<h1>{{count}}</h1> Created Products Matrolux")
+        )->addWidget(
+            SharpOrderedListWidget::make('topTravelledSpaceshipModels')
                 ->setTitle('Updated products by last 7 days')
                 ->buildItemLink(function(LinkToEntity $link, $item) {
-                    if($item['id'] >= 5) {
-                        return null;
-                    }
                     return $link
-                        ->setEntityKey("spaceship")
-                        ->addFilter("type", $item['id']);
+                        ->setEntityKey('product')
+                        ->addFilter('id', $item['id']);
                 })
         );
     }
@@ -45,6 +62,18 @@ class CompanyDashboard extends SharpDashboard
             ->addRow(function(DashboardLayoutRow $row) {
                 $row->addWidget(6, 'capacities_pie')
                     ->addWidget(6, 'capacities');
+            })
+            ->addRow(function(DashboardLayoutRow $row) {
+                $row->addWidget(6, 'createdComefor')
+                    ->addWidget(6, 'updatedComefor');
+            })
+            ->addRow(function(DashboardLayoutRow $row) {
+                $row->addWidget(6, 'createdEMM')
+                    ->addWidget(6, 'updatedEMM');
+            })
+            ->addRow(function(DashboardLayoutRow $row) {
+                $row->addWidget(6, 'createdMatrolux')
+                    ->addWidget(6, 'updatedMatrolux');
             })
             ->addRow(function(DashboardLayoutRow $row) {
                 $row->addWidget(12, 'topTravelledSpaceshipModels');
@@ -110,22 +139,62 @@ class CompanyDashboard extends SharpDashboard
                 ->setColor('#2d2d2d')
         );
 
-//        $this->setPanelData(
-//            'activeSpaceships', ['count' => $spaceships->where('state', 'active')->first()->count]
-//        )->setPanelData(
-//            'inactiveSpaceships', ['count' => $spaceships->where('state', 'inactive')->first()->count]
-//        );
+        $this->setPanelData(
+            'updatedComefor', ['count' => Product::query()
+                ->leftJoin('category', 'product.category_id', '=', 'category.id')
+                ->leftJoin('vendor', 'category.vendor_id', '=', 'vendor.id')
+                ->where('product.updated_at', '>', $this->getLastWeekTime())
+                ->where('vendor.name', Vendor::SLUG_COMEFOR)
+                ->count()]
+        )->setPanelData(
+            'createdComefor', ['count' => Product::query()
+                ->leftJoin('category', 'product.category_id', '=', 'category.id')
+                ->leftJoin('vendor', 'category.vendor_id', '=', 'vendor.id')
+                ->where('product.created_at', '>', $this->getLastWeekTime())
+                ->where('vendor.name', Vendor::SLUG_COMEFOR)
+                ->count()]
+        );
+        $this->setPanelData(
+            'createdEMM', ['count' => Product::query()
+                ->leftJoin('category', 'product.category_id', '=', 'category.id')
+                ->leftJoin('vendor', 'category.vendor_id', '=', 'vendor.id')
+                ->where('product.created_at', '>', $this->getLastWeekTime())
+                ->where('vendor.name', Vendor::SLUG_EMM)
+                ->count()]
+        )->setPanelData(
+            'updatedEMM', ['count' => Product::query()
+                ->leftJoin('category', 'product.category_id', '=', 'category.id')
+                ->leftJoin('vendor', 'category.vendor_id', '=', 'vendor.id')
+                ->where('product.updated_at', '>', $this->getLastWeekTime())
+                ->where('vendor.name', Vendor::SLUG_EMM)
+                ->count()]
+        );
+        $this->setPanelData(
+            'createdMatrolux', ['count' => Product::query()
+                ->leftJoin('category', 'product.category_id', '=', 'category.id')
+                ->leftJoin('vendor', 'category.vendor_id', '=', 'vendor.id')
+                ->where('product.created_at', '>', $this->getLastWeekTime())
+                ->where('vendor.name', Vendor::SLUG_MATROLUX)
+                ->count()]
+        )->setPanelData(
+            'updatedMatrolux', ['count' => Product::query()
+                ->leftJoin('category', 'product.category_id', '=', 'category.id')
+                ->leftJoin('vendor', 'category.vendor_id', '=', 'vendor.id')
+                ->where('product.updated_at', '>', $this->getLastWeekTime())
+                ->where('vendor.name', Vendor::SLUG_MATROLUX)
+                ->count()]
+        );
 
         $this->setOrderedListData(
             'topTravelledSpaceshipModels',
             Product::query()
-                ->take(10)
+                ->take(50)
                 ->get()
                 ->map(function(Product $item) {
                     return [
                         'id' => $item->id,
                         'label' => $item->name,
-                        'count' => $item->id >= 5 ? null : rand(20, 100),
+//                        'count' => $item->id,
                         'updated_at' => $item->updated_at,
                     ];
                 })

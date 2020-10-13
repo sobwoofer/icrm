@@ -105,6 +105,10 @@ class ListProduct extends SharpEntityList
             }
         }
 
+        if ($params->filterFor('id')) {
+            $item->where('id', (array)$params->filterFor('id'));
+        }
+
         if ($params->filterFor('vendor')) {
             $item->leftJoin('category', 'category.id', '=', 'product.category_id');
             $item->leftJoin('vendor', 'vendor.id', '=', 'category.vendor_id');
@@ -118,6 +122,6 @@ class ListProduct extends SharpEntityList
             $item->whereIn('category.id', (array)$params->filterFor('category'));
         }
 
-        return $this->transform($item->paginate(20, ['product.*']));
+        return $this->transform($item->paginate(30, ['product.*']));
     }
 }

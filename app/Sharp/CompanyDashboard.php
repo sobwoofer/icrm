@@ -22,7 +22,7 @@ class CompanyDashboard extends SharpDashboard
     {
         $this->addWidget(
             SharpPieGraphWidget::make('capacities_pie')
-                ->setTitle('Created\Updated last 7 days')
+                ->setTitle('Created\Updated last crawling')
         )->addWidget(
             SharpLineGraphWidget::make('capacities')
                 ->setTitle('Crawling progress stat')
@@ -115,7 +115,7 @@ class CompanyDashboard extends SharpDashboard
         $this->addGraphDataSet(
             'capacities_pie',
             SharpGraphWidgetDataSet::make([
-                CrawlStat::query()->where('created_at', '>', $this->getLastWeekTime())->sum('updated')
+                CrawlStat::query()->orderByDesc('created_at')->pluck('updated')->first()
             ])
                 ->setLabel('Updated')
                 ->setColor('#3e9651')
@@ -124,7 +124,7 @@ class CompanyDashboard extends SharpDashboard
         $this->addGraphDataSet(
             'capacities_pie',
             SharpGraphWidgetDataSet::make([
-                CrawlStat::query()->where('created_at', '>', $this->getLastWeekTime())->sum('created')
+                CrawlStat::query()->orderByDesc('created_at')->pluck('created')->first()
             ])
                 ->setLabel('Created')
                 ->setColor('#6b4c9a')
@@ -133,7 +133,7 @@ class CompanyDashboard extends SharpDashboard
         $this->addGraphDataSet(
             'capacities_pie',
             SharpGraphWidgetDataSet::make([
-                CrawlStat::query()->where('created_at', '>', $this->getLastWeekTime())->sum('crawled')
+                CrawlStat::query()->orderByDesc('created_at')->pluck('crawled')->first()
             ])
                 ->setLabel('Crawled')
                 ->setColor('#2d2d2d')

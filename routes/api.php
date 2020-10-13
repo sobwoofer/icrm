@@ -13,6 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::middleware('auth.basic')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// only methods index, show, store, update, destroy
+Route::apiResource('v1/products', '\App\Http\Controllers\Api\V1\ProductController')->middleware('auth.basic');

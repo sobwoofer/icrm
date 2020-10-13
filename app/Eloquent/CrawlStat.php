@@ -57,7 +57,7 @@ class CrawlStat extends Model
 
     public function incrCrawled(int $incrValue = 1)
     {
-        $this->created += $incrValue;
+        $this->crawled += $incrValue;
         $this->save();
     }
 

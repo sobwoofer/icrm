@@ -151,7 +151,7 @@ class CompanyDashboard extends SharpDashboard
                 ->leftJoin('category', 'product.category_id', '=', 'category.id')
                 ->leftJoin('vendor', 'category.vendor_id', '=', 'vendor.id')
                 ->where('product.created_at', '>', $this->getLastWeekTime())
-                ->where('vendor.name', Vendor::SLUG_COMEFOR)
+                ->where('vendor.slug', Vendor::SLUG_COMEFOR)
                 ->count()]
         );
         $this->setPanelData(
@@ -159,14 +159,14 @@ class CompanyDashboard extends SharpDashboard
                 ->leftJoin('category', 'product.category_id', '=', 'category.id')
                 ->leftJoin('vendor', 'category.vendor_id', '=', 'vendor.id')
                 ->where('product.created_at', '>', $this->getLastWeekTime())
-                ->where('vendor.name', Vendor::SLUG_EMM)
+                ->where('vendor.slug', Vendor::SLUG_EMM)
                 ->count()]
         )->setPanelData(
             'updatedEMM', ['count' => Product::query()
                 ->leftJoin('category', 'product.category_id', '=', 'category.id')
                 ->leftJoin('vendor', 'category.vendor_id', '=', 'vendor.id')
                 ->where('product.updated_at', '>', $this->getLastWeekTime())
-                ->where('vendor.name', Vendor::SLUG_EMM)
+                ->where('vendor.slug', Vendor::SLUG_MATROLUX)
                 ->count()]
         );
         $this->setPanelData(

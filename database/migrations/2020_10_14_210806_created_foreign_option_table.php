@@ -14,7 +14,7 @@ class CreatedForeignOptionTable extends Migration
     public function up()
     {
         Schema::create('foreign_option', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->bigInteger('foreign_option_id')->unique();
             $table->string('name', 190)->index();
             $table->timestamp('created_at')->useCurrent();

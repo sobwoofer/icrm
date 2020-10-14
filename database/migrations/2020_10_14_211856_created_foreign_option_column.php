@@ -29,6 +29,8 @@ class CreatedForeignOptionColumn extends Migration
     {
         Schema::table('price_option', function(Blueprint $table)
         {
+            $table->dropForeign('price_option_foreign_id_foreign');
+            $table->dropIndex('price_option_foreign_id_index');
             $table->dropColumn('foreign_id');
         });
     }

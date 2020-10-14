@@ -19,9 +19,16 @@ return [
         ],
         'priceOption' => [
             'list' => \App\Sharp\Entities\PriceOption\ListPriceOption::class,
+            'form' => \App\Sharp\Entities\PriceOption\FormPriceOption::class,
+            'show' => \App\Sharp\Entities\PriceOption\ShowPriceOption::class,
         ],
         'image' => [
             'list' => \App\Sharp\Entities\Image\ListImage::class,
+        ],
+        'foreignOption' => [
+            'list' => App\Sharp\Entities\ForeignOption\ListForeignOption::class,
+            'form' => App\Sharp\Entities\ForeignOption\FormForeignOption::class,
+            'show' => App\Sharp\Entities\ForeignOption\ShowForeignOption::class,
         ]
 
     ],
@@ -43,19 +50,29 @@ return [
             "dashboard" => "company_dashboard"
         ],
         [
-            'label' => 'Vendor',
+            'label' => 'Vendors',
             'icon' => 'fa-superpowers',
             'entity' => 'vendor'
         ],
         [
-            'label' => 'Category',
+            'label' => 'Categories',
             'icon' => 'fa-superpowers',
             'entity' => 'category'
         ],
         [
-            'label' => 'Product',
+            'label' => 'Products',
             'icon' => 'fa-superpowers',
             'entity' => 'product'
+        ],
+        [
+            'label' => 'Price Options',
+            'icon' => 'fa-superpowers',
+            'entity' => 'priceOption'
+        ],
+        [
+            'label' => 'Foreign Options',
+            'icon' => 'fa-superpowers',
+            'entity' => 'foreignOption'
         ],
     ],
     'uploads' => [

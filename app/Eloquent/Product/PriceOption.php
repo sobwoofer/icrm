@@ -2,8 +2,10 @@
 
 namespace App\Eloquent\Product;
 
+use App\Eloquent\ForeignOption;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Class Customer
@@ -19,7 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class PriceOption extends Model
 {
     protected $table = 'price_option';
-    protected $fillable = ['name', 'price', 'product_id'];
+    protected $fillable = ['name', 'price', 'product_id', 'foreign_id'];
 
     /**
      * @return BelongsTo
@@ -27,6 +29,14 @@ class PriceOption extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function foreignOption(): HasOne
+    {
+        return $this->hasOne(ForeignOption::class, 'id', 'foreign_id');
     }
 
     public function save(array $options = [])

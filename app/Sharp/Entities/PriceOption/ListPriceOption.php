@@ -37,6 +37,10 @@ class ListPriceOption extends SharpEntityList
                 ->setLabel('product_id')
                 ->setSortable()
         )->addDataContainer(
+            EntityListDataContainer::make('foreign_id')
+                ->setLabel('foreign_id')
+                ->setSortable()
+        )->addDataContainer(
             EntityListDataContainer::make('created_at')
                 ->setLabel('created_at')
                 ->setSortable()
@@ -57,8 +61,9 @@ class ListPriceOption extends SharpEntityList
     {
         $this->addColumn('id', 1)
             ->addColumn('name',  2)
-            ->addColumn('price', 2)
+            ->addColumn('price', 1)
             ->addColumn('product_id', 2)
+            ->addColumn('foreign_id', 2)
             ->addColumn('created_at', 2)
             ->addColumn('updated_at', 2);
     }
@@ -88,6 +93,11 @@ class ListPriceOption extends SharpEntityList
         $item = PriceOption::query();
         if($params->sortedBy()) {
             $item->orderBy($params->sortedBy(), $params->sortedDir());
+        }
+
+        if ($params->filterFor('foreign')) {
+            $item->leftJoin('foreign_option', 'foreign_option.id', '=', 'price_option.foreign_id');
+            $item->whereIn('foreign_option.id', (array)$params->filterFor('foreign'));
         }
 
         if ($params->hasSearch() || $params->filterFor('product')) {

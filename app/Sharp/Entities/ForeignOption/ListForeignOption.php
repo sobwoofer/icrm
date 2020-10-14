@@ -1,16 +1,13 @@
 <?php
 
-namespace App\Sharp\Entities\Product;
+namespace App\Sharp\Entities\ForeignOption;
 
-use App\Eloquent\Product\Category;
-use App\Eloquent\Product\Product;
-use App\Sharp\Filters\CategoryFilter;
-use App\Sharp\Filters\VendorFilter;
+use App\Eloquent\ForeignOption;
 use Code16\Sharp\EntityList\Containers\EntityListDataContainer;
 use Code16\Sharp\EntityList\EntityListQueryParams;
 use Code16\Sharp\EntityList\SharpEntityList;
 
-class ListProduct extends SharpEntityList
+class ListForeignOption extends SharpEntityList
 {
     /**
     * Build list containers using ->addDataContainer()
@@ -24,20 +21,12 @@ class ListProduct extends SharpEntityList
                 ->setLabel('Id')
                 ->setSortable()
         )->addDataContainer(
+            EntityListDataContainer::make('foreign_option_id')
+                ->setLabel('foreign_option_id')
+                ->setSortable()
+        )->addDataContainer(
             EntityListDataContainer::make('name')
                 ->setLabel('name')
-                ->setSortable()
-        )->addDataContainer(
-            EntityListDataContainer::make('url')
-                ->setLabel('url')
-                ->setSortable()
-        )->addDataContainer(
-            EntityListDataContainer::make('price')
-                ->setLabel('price')
-                ->setSortable()
-        )->addDataContainer(
-            EntityListDataContainer::make('article')
-                ->setLabel('article')
                 ->setSortable()
         )->addDataContainer(
             EntityListDataContainer::make('created_at')
@@ -59,10 +48,8 @@ class ListProduct extends SharpEntityList
     public function buildListLayout()
     {
         $this->addColumn('id', 1)
-        ->addColumn('name', 2)
-        ->addColumn('url', 3)
-        ->addColumn('price', 1)
-        ->addColumn('article', 1)
+        ->addColumn('name', 3)
+        ->addColumn('foreign_option_id', 3)
         ->addColumn('created_at', 2)
         ->addColumn('updated_at', 2);
     }
@@ -77,7 +64,6 @@ class ListProduct extends SharpEntityList
         $this->setInstanceIdAttribute('id')
             ->setSearchable()
             ->setDefaultSort('id', 'asc')
-            ->addFilter('vendor', VendorFilter::class)
             ->setPaginated();
     }
 
@@ -89,7 +75,8 @@ class ListProduct extends SharpEntityList
     */
     public function getListData(EntityListQueryParams $params)
     {
-        $item = Product::query();
+        $item = ForeignOption::query();
+
         if($params->sortedBy()) {
             $item->orderBy($params->sortedBy(), $params->sortedDir());
         }
@@ -98,29 +85,12 @@ class ListProduct extends SharpEntityList
             if ($params->hasSearch()) {
                 foreach ($params->searchWords() as $word) {
                     $item->where(function ($query) use ($word) {
-                        $query->orWhere('product.name', 'like', $word);
+                        $query->orWhere('foreign_option.name', 'like', $word);
                     });
                 }
             }
         }
 
-        if ($params->filterFor('id')) {
-            $item->where('id', (array)$params->filterFor('id'));
-        }
-
-        if ($params->filterFor('vendor')) {
-            $item->leftJoin('category', 'category.id', '=', 'product.category_id');
-            $item->leftJoin('vendor', 'vendor.id', '=', 'category.vendor_id');
-
-            $item->whereIn('vendor.id', (array)$params->filterFor('vendor'));
-        }
-
-        if ($params->filterFor('category')) {
-            $item->leftJoin('category', 'category.id', '=', 'product.category_id');
-
-            $item->whereIn('category.id', (array)$params->filterFor('category'));
-        }
-
-        return $this->transform($item->paginate(30, ['product.*']));
+        return $this->transform($item->paginate(30, ['foreign_option.*']));
     }
 }

@@ -15,7 +15,7 @@ class CreatedForeignOptionColumn extends Migration
     {
         Schema::table('price_option', function(Blueprint $table)
         {
-            $table->integer('foreign_id')->index()->nullable();
+            $table->unsignedBigInteger('foreign_id')->index()->nullable();
             $table->foreign('foreign_id')->references('id')->on('foreign_option')->onDelete('set null');
         });
     }

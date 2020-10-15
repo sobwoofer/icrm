@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Product extends Model
 {
     protected $table = 'product';
-    protected $fillable = ['name', 'description', 'url', 'image_url', 'price', 'article'];
+    protected $fillable = ['name', 'description', 'url', 'image_url', 'price', 'article', 'foreign_article', 'active'];
 
     /**
      * @return BelongsTo

@@ -2,9 +2,7 @@
 
 namespace App\Sharp\Entities\Product;
 
-use App\Eloquent\Product\Category;
 use App\Eloquent\Product\Product;
-use App\Sharp\Filters\CategoryFilter;
 use App\Sharp\Filters\VendorFilter;
 use Code16\Sharp\EntityList\Containers\EntityListDataContainer;
 use Code16\Sharp\EntityList\EntityListQueryParams;
@@ -36,8 +34,8 @@ class ListProduct extends SharpEntityList
                 ->setLabel('price')
                 ->setSortable()
         )->addDataContainer(
-            EntityListDataContainer::make('article')
-                ->setLabel('article')
+            EntityListDataContainer::make('foreign_article')
+                ->setLabel('foreign_article')
                 ->setSortable()
         )->addDataContainer(
             EntityListDataContainer::make('created_at')
@@ -60,9 +58,9 @@ class ListProduct extends SharpEntityList
     {
         $this->addColumn('id', 1)
         ->addColumn('name', 2)
-        ->addColumn('url', 3)
+        ->addColumn('url', 2)
         ->addColumn('price', 1)
-        ->addColumn('article', 1)
+        ->addColumn('foreign_article', 2)
         ->addColumn('created_at', 2)
         ->addColumn('updated_at', 2);
     }

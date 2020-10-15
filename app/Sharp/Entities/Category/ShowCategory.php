@@ -60,7 +60,7 @@ class ShowCategory extends SharpShow
                 })
                 ->showEntityState(false)
                 ->showReorderButton(true)
-                ->showCreateButton()
+                ->showCreateButton(false)
         );
     }
 

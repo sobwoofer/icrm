@@ -1,15 +1,20 @@
 <?php
 
-namespace App\Sharp\Entities\PriceOption;
+namespace App\Sharp\Entities\Category;
 
 use App\Eloquent\ForeignOption;
+use App\Eloquent\Product\Category;
 use App\Eloquent\Product\PriceOption;
+use App\Eloquent\Product\Vendor;
 use Code16\Sharp\Form\Eloquent\WithSharpFormEloquentUpdater;
 use Code16\Sharp\Form\Fields\SharpFormSelectField;
+use Code16\Sharp\Form\Fields\SharpFormTagsField;
+use Code16\Sharp\Form\Fields\SharpFormTextField;
 use Code16\Sharp\Form\Layout\FormLayoutColumn;
 use Code16\Sharp\Form\SharpForm;
+use Code16\Sharp\Show\Fields\SharpShowTextField;
 
-class FormPriceOption extends SharpForm
+class FormCategory extends SharpForm
 {
     use WithSharpFormEloquentUpdater;
 
@@ -22,7 +27,7 @@ class FormPriceOption extends SharpForm
     public function find($id): array
     {
         return $this->transform(
-            PriceOption::query()->with('foreignOption')->findOrFail($id)
+            Category::query()->with('vendor')->findOrFail($id)
         );
     }
 
@@ -33,7 +38,7 @@ class FormPriceOption extends SharpForm
      */
     public function update($id, array $data)
     {
-        $item = $id ? PriceOption::query()->findOrFail($id) : new PriceOption;
+        $item = $id ? Category::query()->findOrFail($id) : new Category;
         $this->save($item, $data);
     }
 
@@ -43,7 +48,7 @@ class FormPriceOption extends SharpForm
      */
     public function delete($id)
     {
-        PriceOption::query()->findOrFail($id)->find($id)->delete();
+        Category::query()->findOrFail($id)->find($id)->delete();
     }
 
     /**
@@ -54,9 +59,17 @@ class FormPriceOption extends SharpForm
     public function buildFormFields()
     {
         $this->addField(
-            SharpFormSelectField::make('foreign_id',
-                ForeignOption::orderBy('id')->get()->pluck('name', 'id')->all()
-            )->setLabel('Foreign Option')
+            SharpShowTextField::make('name')
+                ->setLabel('name')
+        )->addField(
+            SharpFormTextField::make('url')
+                ->setLabel('url')
+        )->addField(
+            SharpFormSelectField::make('vendor_id',
+                Vendor::orderBy('id')->get()->pluck('name', 'id')->all()
+            )
+                ->setDisplayAsDropdown()
+                ->setLabel('Vendor')
         );
     }
 
@@ -68,7 +81,9 @@ class FormPriceOption extends SharpForm
     public function buildFormLayout()
     {
         $this->addColumn(6, function(FormLayoutColumn $column) {
-            $column->withSingleField('foreign_id');
+            $column->withSingleField('name');
+            $column->withSingleField('url');
+            $column->withSingleField('vendor_id');
         });
     }
 }

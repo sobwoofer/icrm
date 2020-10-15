@@ -31,8 +31,8 @@ class ListCategory extends SharpEntityList
                 ->setLabel('url')
                 ->setHtml()
         )->addDataContainer(
-            EntityListDataContainer::make('vendor_id')
-                ->setLabel('vendor_id')
+            EntityListDataContainer::make('vendor')
+                ->setLabel('vendor')
                 ->setSortable()
         )->addDataContainer(
             EntityListDataContainer::make('parent_id')
@@ -60,8 +60,7 @@ class ListCategory extends SharpEntityList
         $this->addColumn('id', 1)
             ->addColumn('name',  2)
             ->addColumn('url', 4)
-            ->addColumn('vendor_id', 2)
-            ->addColumn('parent_id', 1)
+            ->addColumn('vendor', 2)
             ->addColumn('created_at', 2);
     }
 
@@ -109,14 +108,10 @@ class ListCategory extends SharpEntityList
             }
         }
 
-//        $this->setCustomTransformer('vendors', function($vendors, $category) {
-//            return $category->tags->map(function($tag) {
-//                return (new LinkToEntity($tag->label, 'tags'))
-//                    ->setTooltip('See related tags')
-//                    ->setSearch($tag->title)
-//                    ->render();
-//            });
-//        });
+
+        $this->setCustomTransformer('vendor', function($vendors, Category $item) {
+            return $item->vendor->name;
+        });
 
         return $this->transform($item->paginate(10, ['category.*']));
     }

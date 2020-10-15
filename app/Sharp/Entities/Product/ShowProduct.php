@@ -73,7 +73,7 @@ class ShowProduct extends SharpShow
                  })
                  ->showEntityState(false)
                  ->showReorderButton(true)
-                 ->showCreateButton()
+                 ->showCreateButton(false)
          )->addField(
              SharpShowEntityListField::make('priceOptions', 'priceOption')
                  ->hideFilterWithValue('product', function($instanceId) {
@@ -81,7 +81,7 @@ class ShowProduct extends SharpShow
                  })
                  ->showEntityState(false)
                  ->showReorderButton(true)
-                 ->showCreateButton()
+                 ->showCreateButton(false)
          );
     }
 

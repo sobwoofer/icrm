@@ -12,15 +12,16 @@ return [
         'category' => [
             'list' => \App\Sharp\Entities\Category\ListCategory::class,
             'show' => \App\Sharp\Entities\Category\ShowCategory::class,
+            'form' => \App\Sharp\Entities\Category\FormCategory::class,
         ],
         'product' => [
             'list' => \App\Sharp\Entities\Product\ListProduct::class,
             'show' => \App\Sharp\Entities\Product\ShowProduct::class,
+            'form' => \App\Sharp\Entities\Product\FormProduct::class,
         ],
         'priceOption' => [
             'list' => \App\Sharp\Entities\PriceOption\ListPriceOption::class,
             'form' => \App\Sharp\Entities\PriceOption\FormPriceOption::class,
-            'show' => \App\Sharp\Entities\PriceOption\ShowPriceOption::class,
         ],
         'image' => [
             'list' => \App\Sharp\Entities\Image\ListImage::class,
@@ -46,28 +47,33 @@ return [
     'menu' => [
         [
             "label" => "Dashboard",
-            "icon" => "fa-tachometer-alt",
+            "icon" => "fa-superpowers",
             "dashboard" => "company_dashboard"
         ],
         [
-            'label' => 'Vendors',
-            'icon' => 'fa-superpowers',
-            'entity' => 'vendor'
-        ],
-        [
-            'label' => 'Categories',
-            'icon' => 'fa-superpowers',
-            'entity' => 'category'
-        ],
-        [
-            'label' => 'Products',
-            'icon' => 'fa-superpowers',
-            'entity' => 'product'
-        ],
-        [
-            'label' => 'Price Options',
-            'icon' => 'fa-superpowers',
-            'entity' => 'priceOption'
+            'label' => 'Crawled Entities',
+            'entities' => [
+                [
+                    'label' => 'Vendors',
+                    'icon' => 'fa-superpowers',
+                    'entity' => 'vendor'
+                ],
+                [
+                    'label' => 'Categories',
+                    'icon' => 'fa-superpowers',
+                    'entity' => 'category'
+                ],
+                [
+                    'label' => 'Products',
+                    'icon' => 'fa-superpowers',
+                    'entity' => 'product'
+                ],
+                [
+                    'label' => 'Price Options',
+                    'icon' => 'fa-superpowers',
+                    'entity' => 'priceOption'
+                ],
+            ]
         ],
         [
             'label' => 'Foreign Options',

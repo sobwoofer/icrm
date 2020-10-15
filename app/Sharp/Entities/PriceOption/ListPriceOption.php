@@ -37,8 +37,8 @@ class ListPriceOption extends SharpEntityList
                 ->setLabel('product_id')
                 ->setSortable()
         )->addDataContainer(
-            EntityListDataContainer::make('foreign_id')
-                ->setLabel('foreign_id')
+            EntityListDataContainer::make('foreignOption')
+                ->setLabel('foreign_Option')
                 ->setSortable()
         )->addDataContainer(
             EntityListDataContainer::make('created_at')
@@ -63,7 +63,7 @@ class ListPriceOption extends SharpEntityList
             ->addColumn('name',  2)
             ->addColumn('price', 1)
             ->addColumn('product_id', 2)
-            ->addColumn('foreign_id', 2)
+            ->addColumn('foreignOption', 2)
             ->addColumn('created_at', 2)
             ->addColumn('updated_at', 2);
     }
@@ -115,6 +115,10 @@ class ListPriceOption extends SharpEntityList
                 }
             }
         }
+
+        $this->setCustomTransformer('foreignOption', function($value, PriceOption $item) {
+                return  $item->foreignOption ? $item->foreignOption->name : '';
+            });
 
         return $this->transform($item->paginate(30, ['price_option.*']));
     }

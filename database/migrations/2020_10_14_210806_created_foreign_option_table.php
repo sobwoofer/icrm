@@ -13,9 +13,10 @@ class CreatedForeignOptionTable extends Migration
      */
     public function up()
     {
-        Schema::create('foreign_option', function (Blueprint $table) {
-            $table->increments('id');
-            $table->bigInteger('foreign_option_id')->unique();
+
+        Schema::create('general_option', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('general_option_id')->unique();
             $table->string('name', 190)->index();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
@@ -30,6 +31,6 @@ class CreatedForeignOptionTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('foreign_option');
+        Schema::dropIfExists('general_option');
     }
 }

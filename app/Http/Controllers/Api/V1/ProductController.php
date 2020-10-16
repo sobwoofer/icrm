@@ -17,6 +17,7 @@ class ProductController extends Controller
         'product.url',
         'product.image_url',
         'product.article',
+        'product.foreign_article',
         'product.description',
         'product.created_at',
         'product.updated_at',

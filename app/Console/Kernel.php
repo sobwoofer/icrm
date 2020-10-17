@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\CrawlVendors;
+use App\Console\Commands\SyncProducts;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -15,6 +16,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         CrawlVendors::class,
+        SyncProducts::class,
     ];
 
     /**
@@ -25,7 +27,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('crawl-vendors')->daily();
+        $schedule->command('crawl-vendors')->daily()->at('01:00');
+        $schedule->command('sync-products')->daily()->at('04:00');
     }
 
     /**

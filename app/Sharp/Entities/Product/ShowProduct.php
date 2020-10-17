@@ -52,8 +52,8 @@ class ShowProduct extends SharpShow
              SharpShowTextField::make('last_sync_date')
                  ->setLabel('last_sync_date:')
          )->addField(
-             SharpShowTextField::make('foreign_id')
-                 ->setLabel('foreign_id:')
+             SharpShowTextField::make('foreign_product_id')
+                 ->setLabel('foreign_product_id:')
          )->addField(
              SharpShowTextField::make('article')
                  ->setLabel('article:')
@@ -108,7 +108,7 @@ class ShowProduct extends SharpShow
                   $column->withSingleField('url');
                   $column->withSingleField('article');
                   $column->withSingleField('last_sync_date');
-                  $column->withSingleField('foreign_id');
+                  $column->withSingleField('foreign_product_id');
                   $column->withSingleField('category_id');
                   $column->withSingleField('description');
                   $column->withSingleField('created_at');

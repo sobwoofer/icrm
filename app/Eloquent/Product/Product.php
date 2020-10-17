@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $category_id
  * @property Category $category
  * @property PriceOption[] $priceOptions
+ * @property PriceOption[] $syncPriceOptions
  * @property Image[] $images
  * @property string $created_at
  * @property string $updated_at
@@ -54,6 +55,14 @@ class Product extends Model
     public function priceOptions(): HasMany
     {
         return $this->hasMany(PriceOption::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function syncPriceOptions(): HasMany
+    {
+        return $this->hasMany(PriceOption::class)->where('foreign_option_id', '=!', null);
     }
 
     public function updateLastSync($foreignId = null)

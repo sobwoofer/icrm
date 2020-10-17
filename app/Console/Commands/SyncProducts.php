@@ -45,7 +45,7 @@ class SyncProducts extends Command
             ->where('created_at', '>', $this->getLastDayTime())
             ->where('foreign_product_id','=', null)
             ->where('active',1)
-            ->with('priceOptions')->get()->all();
+            ->with(['syncPriceOptions', 'images'])->get()->all();
 
         foreach ($lastCreatedProducts as $product) {
             if ($foreignId = $this->imebliClient->createProduct($product)) {
@@ -62,7 +62,7 @@ class SyncProducts extends Command
             ->where('updated_at', '>', $this->getLastDayTime())
             ->where('foreign_product_id','!=', null)
             ->where('active',1)
-            ->with('priceOptions')->get()->all();
+            ->with('syncPriceOptions')->get()->all();
 
         foreach ($lastUpdatedProducts as $lastUpdatedProduct) {
             if ($this->imebliClient->updateProduct($lastUpdatedProduct)) {

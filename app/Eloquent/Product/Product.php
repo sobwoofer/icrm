@@ -62,7 +62,9 @@ class Product extends Model
      */
     public function syncPriceOptions(): HasMany
     {
-        return $this->hasMany(PriceOption::class)->where('foreign_option_id', '!=', null);
+        return $this->hasMany(PriceOption::class)
+            ->with('foreignOption')
+            ->where('foreign_option_id', '!=', null);
     }
 
     public function updateLastSync($foreignId = null)

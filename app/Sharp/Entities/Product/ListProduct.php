@@ -34,8 +34,8 @@ class ListProduct extends SharpEntityList
                 ->setLabel('price')
                 ->setSortable()
         )->addDataContainer(
-            EntityListDataContainer::make('foreign_article')
-                ->setLabel('foreign_article')
+            EntityListDataContainer::make('foreign_id')
+                ->setLabel('foreign_id')
                 ->setSortable()
         )->addDataContainer(
             EntityListDataContainer::make('created_at')
@@ -60,7 +60,7 @@ class ListProduct extends SharpEntityList
         ->addColumn('name', 2)
         ->addColumn('url', 2)
         ->addColumn('price', 1)
-        ->addColumn('foreign_article', 2)
+        ->addColumn('foreign_id', 2)
         ->addColumn('created_at', 2)
         ->addColumn('updated_at', 2);
     }

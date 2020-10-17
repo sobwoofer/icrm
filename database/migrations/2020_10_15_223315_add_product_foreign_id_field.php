@@ -15,8 +15,8 @@ class AddProductForeignIdField extends Migration
     {
         Schema::table('product', function(Blueprint $table)
         {
-            $table->string('foreign_article')->after('article')->nullable();
-            $table->boolean('active')->after('foreign_article')->default(true);
+            $table->string('foreign_product_id')->after('article')->nullable();
+            $table->boolean('active')->after('foreign_product_id')->default(true);
         });
     }
 
@@ -29,7 +29,7 @@ class AddProductForeignIdField extends Migration
     {
         Schema::table('product', function(Blueprint $table)
         {
-            $table->dropColumn('foreign_article');
+            $table->dropColumn('foreign_product_id');
             $table->dropColumn('active');
         });
     }

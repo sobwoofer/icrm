@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $image_url
  * @property float $price
  * @property string $article
+ * @property string $foreign_id
  * @property int $category_id
  * @property Category $category
  * @property PriceOption[] $priceOptions
@@ -26,7 +27,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Product extends Model
 {
     protected $table = 'product';
-    protected $fillable = ['name', 'description', 'url', 'image_url', 'price', 'article', 'foreign_article', 'active'];
+    protected $fillable = ['name', 'description', 'url', 'image_url', 'price', 'article', 'foreign_id', 'active'];
 
     /**
      * @return BelongsTo

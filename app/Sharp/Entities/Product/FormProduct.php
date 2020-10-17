@@ -60,8 +60,8 @@ class FormProduct extends SharpForm
     public function buildFormFields()
     {
         $this->addField(
-            SharpShowTextField::make('foreign_article')
-                ->setLabel('foreign_article')
+            SharpShowTextField::make('foreign_id')
+                ->setLabel('foreign_id')
         )->addField(
             SharpFormSelectField::make('active', [1 => 'on', 0 => 'off'])
                 ->setLabel('active')
@@ -76,7 +76,7 @@ class FormProduct extends SharpForm
     public function buildFormLayout()
     {
         $this->addColumn(6, function(FormLayoutColumn $column) {
-            $column->withSingleField('foreign_article');
+            $column->withSingleField('foreign_id');
             $column->withSingleField('active');
         });
     }

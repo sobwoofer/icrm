@@ -16,7 +16,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $image_url
  * @property float $price
  * @property string $article
- * @property string $foreign_id
+ * @property string $foreign_product_id
+ * @property string $last_sync_date
  * @property int $category_id
  * @property Category $category
  * @property PriceOption[] $priceOptions
@@ -27,7 +28,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Product extends Model
 {
     protected $table = 'product';
-    protected $fillable = ['name', 'description', 'url', 'image_url', 'price', 'article', 'foreign_id', 'active'];
+    protected $fillable = [
+        'name',
+        'description',
+        'url',
+        'image_url',
+        'price',
+        'article',
+        'foreign_product_id',
+        'last_sync_date',
+        'active'
+    ];
 
     /**
      * @return BelongsTo
@@ -43,6 +54,15 @@ class Product extends Model
     public function priceOptions(): HasMany
     {
         return $this->hasMany(PriceOption::class);
+    }
+
+    public function updateLastSync($foreignId = null)
+    {
+        if ($foreignId) {
+            $this->foreign_product_id = $foreignId;
+        }
+        $this->last_sync_date = date('Y-m-d h:i:s');
+        $this->save();
     }
 
     /**

@@ -96,7 +96,7 @@ class ListPriceOption extends SharpEntityList
         }
 
         if ($params->filterFor('foreign')) {
-            $item->leftJoin('foreign_option', 'foreign_option.id', '=', 'price_option.foreign_id');
+            $item->leftJoin('foreign_option', 'foreign_option.id', '=', 'price_option.foreign_option_id');
             $item->whereIn('foreign_option.id', (array)$params->filterFor('foreign'));
         }
 

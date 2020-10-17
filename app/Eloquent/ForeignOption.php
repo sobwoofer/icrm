@@ -28,7 +28,7 @@ class ForeignOption extends Model
      */
     public function priceOptions(): HasMany
     {
-        return $this->hasMany(PriceOption::class, 'foreign_id', 'id');
+        return $this->hasMany(PriceOption::class, 'foreign_option_id', 'id');
     }
 
 }

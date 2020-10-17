@@ -49,6 +49,9 @@ class ShowProduct extends SharpShow
              SharpShowTextField::make('price')
                  ->setLabel('price:')
          )->addField(
+             SharpShowTextField::make('last_sync_date')
+                 ->setLabel('last_sync_date:')
+         )->addField(
              SharpShowTextField::make('foreign_id')
                  ->setLabel('foreign_id:')
          )->addField(
@@ -104,6 +107,7 @@ class ShowProduct extends SharpShow
                   $column->withSingleField('price');
                   $column->withSingleField('url');
                   $column->withSingleField('article');
+                  $column->withSingleField('last_sync_date');
                   $column->withSingleField('foreign_id');
                   $column->withSingleField('category_id');
                   $column->withSingleField('description');

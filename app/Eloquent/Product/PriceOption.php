@@ -37,7 +37,7 @@ class PriceOption extends Model
      */
     public function foreignOption(): HasOne
     {
-        return $this->hasOne(ForeignOption::class, 'id', 'foreign_id');
+        return $this->hasOne(ForeignOption::class, 'id', 'foreign_option_id');
     }
 
     public function save(array $options = [])

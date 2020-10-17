@@ -54,7 +54,7 @@ class FormPriceOption extends SharpForm
     public function buildFormFields()
     {
         $this->addField(
-            SharpFormSelectField::make('foreign_id',
+            SharpFormSelectField::make('foreign_option_id',
                 ForeignOption::orderBy('id')->get()->pluck('name', 'id')->all()
             )->setLabel('Foreign Option')
         );
@@ -68,7 +68,7 @@ class FormPriceOption extends SharpForm
     public function buildFormLayout()
     {
         $this->addColumn(6, function(FormLayoutColumn $column) {
-            $column->withSingleField('foreign_id');
+            $column->withSingleField('foreign_option_id');
         });
     }
 }

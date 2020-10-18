@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Eloquent\CrawlStat;
+use App\Eloquent\ForeignOption;
 use App\Eloquent\Product\Image;
 use App\Eloquent\Product\PriceOption;
 use App\Eloquent\Product\Product;
@@ -22,7 +23,7 @@ class ProductCrawledListener
     public function handle(ProductCrawled $event)
     {
         /** @var Product $product */
-        if ($product = $this->getProduct($event->article)){
+        if ($product = $this->getProduct($event->article)) {
             $this->fillAndSaveProduct($product, $event);
 
             if ($event->priceOptions) {
@@ -88,8 +89,30 @@ class ProductCrawledListener
             $priceOption->name = $priceOptionArray['name'];
             $priceOption->price = $priceOptionArray['price'];
             $priceOption->product_id = $product->id;
+            $priceOption->foreign_option_id = $this->resolveForeignOptionIdByName($priceOptionArray['name']);
             $priceOption->save();
         }
+    }
+
+    private function resolveForeignOptionIdByName(string $priceOptionName): ?int
+    {
+        preg_match_all('!\d+!', $priceOptionName, $matches);
+
+        if (!empty($matches[0]) && count($matches[0]) === 2) {
+            $firstSize = (int)$matches[0][0];
+            $secondSize = (int)$matches[0][1];
+
+            $sizeCombinations = [
+                $firstSize . 'x' . $secondSize,
+                $secondSize . 'x' . $firstSize,
+                $firstSize * 10 . 'x' . $secondSize * 10,
+                $secondSize * 10 . 'x' . $firstSize * 10,
+            ];
+
+            return ForeignOption::query()->whereIn('name', $sizeCombinations)->pluck('id')->first();
+        }
+
+        return null;
     }
 
     /**

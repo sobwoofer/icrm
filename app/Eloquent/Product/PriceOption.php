@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $name
  * @property int $product_id
  * @property float $price
+ * @property string $foreign_option_id
  * @property Product $product
  * @property ForeignOption $foreignOption
  * @property string $created_at

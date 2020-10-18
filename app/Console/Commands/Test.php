@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 
+use App\Eloquent\ForeignOption;
+use App\Eloquent\Product\PriceOption;
 use App\Services\Crawlers\ComeforCrawler;
 use App\Services\Crawlers\EmmCrawler;
 use App\Services\Crawlers\MatroluxCrawler;
@@ -59,8 +61,27 @@ class Test extends Command
      */
     public function handle()
     {
-        $productLink  = 'https://matroluxe.com/ru/matras-topper-futon-5';
-        $this->matroluxCrawler->crawlProductByUrl($productLink, 22);
+        $priceOptions = PriceOption::query()->get()->all();
+
+        /** @var PriceOption $priceOption */
+        foreach ($priceOptions as $priceOption) {
+            $priceOption->foreign_option_id = $this->resolveForeignOptionIdByName($priceOption->name);
+            $priceOption->save();
+            $this->info('done option id: ' . $priceOption->id . PHP_EOL);
+        }
+
+//        $priceOption = PriceOption::query()->where('id',4126)->get()->first();
+//
+//            $priceOption->foreign_option_id = $this->resolveForeignOptionIdByName($priceOption->name);
+//            $priceOption->save();
+//            $this->info('done option id: ' . $priceOption->id . PHP_EOL);
+
+
+
+
+
+//        $productLink  = 'https://matroluxe.com/ru/matras-topper-futon-5';
+//        $this->matroluxCrawler->crawlProductByUrl($productLink, 22);
 
 
 //        $this->runBot();
@@ -69,6 +90,27 @@ class Test extends Command
 //            sleep(2);
 //        }
 
+    }
+
+    private function resolveForeignOptionIdByName(string $priceOptionName): ?int
+    {
+        preg_match_all('!\d+!', $priceOptionName, $matches);
+
+        if (!empty($matches[0]) && count($matches[0]) === 2) {
+            $firstSize = (int)$matches[0][0];
+            $secondSize = (int)$matches[0][1];
+
+            $sizeCombinations = [
+                $firstSize . 'x' . $secondSize,
+                $secondSize . 'x' . $firstSize,
+                $firstSize * 10 . 'x' . $secondSize * 10,
+                $secondSize * 10 . 'x' . $firstSize * 10,
+            ];
+
+            return ForeignOption::query()->whereIn('name', $sizeCombinations)->pluck('id')->first();
+        }
+
+        return null;
     }
 
 }

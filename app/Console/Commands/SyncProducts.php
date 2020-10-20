@@ -3,14 +3,14 @@
 namespace App\Console\Commands;
 
 use App\Eloquent\Product\Product;
-use App\Services\ImebliClient;
+use App\Services\OpencartClient;
 use Illuminate\Console\Command;
 use Log;
 
 /**
  * Class SyncProducts
  * @package App\Console\Commands
- * @property ImebliClient $imebliClient
+ * @property OpencartClient $opencartClient
  */
 class SyncProducts extends Command
 {
@@ -19,13 +19,13 @@ class SyncProducts extends Command
     protected $signature = 'sync-products';
     protected $description = 'Command description';
 
-    private $imebliClient;
+    private $opencartClient;
 
     public function __construct(
-        ImebliClient $imebliClient
+        OpencartClient $opencartClient
     )
     {
-        $this->imebliClient = $imebliClient;
+        $this->opencartClient = $opencartClient;
         parent::__construct();
     }
 
@@ -48,7 +48,7 @@ class SyncProducts extends Command
             ->with(['syncPriceOptions', 'images'])->get()->all();
 
         foreach ($lastCreatedProducts as $product) {
-            if ($foreignId = $this->imebliClient->createProduct($product)) {
+            if ($foreignId = $this->opencartClient->createProduct($product)) {
                 $product->updateLastSync($foreignId);
             }
             sleep(self::DELAY_BETWEEN_REQUESTS);
@@ -65,7 +65,7 @@ class SyncProducts extends Command
             ->with('syncPriceOptions')->get()->all();
 
         foreach ($lastUpdatedProducts as $lastUpdatedProduct) {
-            if ($this->imebliClient->updateProduct($lastUpdatedProduct)) {
+            if ($this->opencartClient->updateProduct($lastUpdatedProduct)) {
                 $lastUpdatedProduct->updateLastSync();
             }
             sleep(self::DELAY_BETWEEN_REQUESTS);

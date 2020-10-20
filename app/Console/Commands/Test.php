@@ -61,14 +61,28 @@ class Test extends Command
      */
     public function handle()
     {
-        $priceOptions = PriceOption::query()->get()->all();
+        $ricePerCell = 0;
+        $totalRices = 0;
 
-        /** @var PriceOption $priceOption */
-        foreach ($priceOptions as $priceOption) {
-            $priceOption->foreign_option_id = $this->resolveForeignOptionIdByName($priceOption->name);
-            $priceOption->save();
-            $this->info('done option id: ' . $priceOption->id . PHP_EOL);
+        for ($i = 1; $i <= 64; $i++) {
+            $ricePerCell = $i === 1 ? 1 : $ricePerCell * 2;
+            $this->warn('rices in ' . $i . ' cell ' . $ricePerCell . PHP_EOL);
+            $totalRices += $ricePerCell;
+            usleep(100000);
         }
+
+
+
+        $this->info('total ' . number_format($totalRices, 0, '', ' ') . PHP_EOL);
+
+//        $priceOptions = PriceOption::query()->get()->all();
+//
+//        /** @var PriceOption $priceOption */
+//        foreach ($priceOptions as $priceOption) {
+//            $priceOption->foreign_option_id = $this->resolveForeignOptionIdByName($priceOption->name);
+//            $priceOption->save();
+//            $this->info('done option id: ' . $priceOption->id . PHP_EOL);
+//        }
 
 //        $priceOption = PriceOption::query()->where('id',4126)->get()->first();
 //

@@ -30,6 +30,15 @@ return [
             'list' => App\Sharp\Entities\ForeignOption\ListForeignOption::class,
             'form' => App\Sharp\Entities\ForeignOption\FormForeignOption::class,
             'show' => App\Sharp\Entities\ForeignOption\ShowForeignOption::class,
+        ],
+        'clientSite' => [
+            'list' => App\Sharp\Entities\ClientSite\ListClientSite::class,
+            'form' => App\Sharp\Entities\ClientSite\FormClientSite::class,
+            'show' => App\Sharp\Entities\ClientSite\ShowClientSite::class,
+        ],
+        'productToClient' => [
+            'list' => App\Sharp\Entities\ProductToClient\ListProductToClient::class,
+            'form' => App\Sharp\Entities\ProductToClient\FormProductToClient::class,
         ]
 
     ],
@@ -76,9 +85,14 @@ return [
             ]
         ],
         [
-            'label' => 'Foreign Options',
+            'label' => 'Client Options',
             'icon' => 'fa-superpowers',
             'entity' => 'foreignOption'
+        ],
+        [
+            'label' => 'Client Sites',
+            'icon' => 'fa-superpowers',
+            'entity' => 'clientSite'
         ],
     ],
     'uploads' => [

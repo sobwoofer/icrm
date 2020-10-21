@@ -2,18 +2,11 @@
 
 namespace App\Sharp\Entities\Product;
 
-use App\Eloquent\ForeignOption;
-use App\Eloquent\Product\Category;
-use App\Eloquent\Product\PriceOption;
 use App\Eloquent\Product\Product;
-use App\Eloquent\Product\Vendor;
 use Code16\Sharp\Form\Eloquent\WithSharpFormEloquentUpdater;
 use Code16\Sharp\Form\Fields\SharpFormSelectField;
-use Code16\Sharp\Form\Fields\SharpFormTagsField;
-use Code16\Sharp\Form\Fields\SharpFormTextField;
 use Code16\Sharp\Form\Layout\FormLayoutColumn;
 use Code16\Sharp\Form\SharpForm;
-use Code16\Sharp\Show\Fields\SharpShowTextField;
 
 class FormProduct extends SharpForm
 {
@@ -28,7 +21,7 @@ class FormProduct extends SharpForm
     public function find($id): array
     {
         return $this->transform(
-            Product::query()->with('category')->findOrFail($id)
+            Product::query()->with(['category'])->findOrFail($id)
         );
     }
 
@@ -60,9 +53,6 @@ class FormProduct extends SharpForm
     public function buildFormFields()
     {
         $this->addField(
-            SharpShowTextField::make('foreign_product_id')
-                ->setLabel('foreign_product_id')
-        )->addField(
             SharpFormSelectField::make('active', [1 => 'on', 0 => 'off'])
                 ->setLabel('active')
         );
@@ -76,7 +66,6 @@ class FormProduct extends SharpForm
     public function buildFormLayout()
     {
         $this->addColumn(6, function(FormLayoutColumn $column) {
-            $column->withSingleField('foreign_product_id');
             $column->withSingleField('active');
         });
     }

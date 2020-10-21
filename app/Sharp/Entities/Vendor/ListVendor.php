@@ -3,6 +3,7 @@
 namespace App\Sharp\Entities\Vendor;
 
 use App\Eloquent\Product\Vendor;
+use App\Sharp\Filters\ClientSiteFilter;
 use Code16\Sharp\EntityList\Containers\EntityListDataContainer;
 use Code16\Sharp\EntityList\EntityListQueryParams;
 use Code16\Sharp\EntityList\SharpEntityList;
@@ -62,8 +63,9 @@ class ListVendor extends SharpEntityList
     public function buildListConfig()
     {
         $this->setInstanceIdAttribute('id')
-            ->setSearchable()
             ->setDefaultSort('name', 'asc')
+            ->addFilter('client_site', ClientSiteFilter::class)
+            ->setSearchable()
             ->setPaginated();
     }
 
@@ -75,6 +77,14 @@ class ListVendor extends SharpEntityList
     */
     public function getListData(EntityListQueryParams $params)
     {
-        return $this->transform(Vendor::all());
+        $item = Vendor::query();
+
+        if ($clientSite = $params->filterFor('client_site')) {
+            $item->leftJoin('vendor_to_client', 'vendor.id', '=', 'vendor_to_client.vendor_id')
+                ->leftJoin('client_site', 'client_site.id', '=', 'vendor_to_client.client_site_id')
+                ->where('client_site.id', $clientSite);
+        }
+
+        return $this->transform($item->paginate(30, ['vendor.*']));
     }
 }

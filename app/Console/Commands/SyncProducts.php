@@ -2,15 +2,15 @@
 
 namespace App\Console\Commands;
 
+use App\Eloquent\ClientSite;
 use App\Eloquent\Product\Product;
-use App\Services\OpencartClient;
+use App\Services\ClientSites\ClientSiteFactory;
 use Illuminate\Console\Command;
 use Log;
 
 /**
  * Class SyncProducts
  * @package App\Console\Commands
- * @property OpencartClient $opencartClient
  */
 class SyncProducts extends Command
 {
@@ -19,56 +19,83 @@ class SyncProducts extends Command
     protected $signature = 'sync-products';
     protected $description = 'Command description';
 
-    private $opencartClient;
-
-    public function __construct(
-        OpencartClient $opencartClient
-    )
-    {
-        $this->opencartClient = $opencartClient;
-        parent::__construct();
-    }
-
     /**
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function handle(): void
     {
-        $this->syncUpdatedProducts();
+//        $this->syncUpdatedProducts();
         $this->syncCreatedProducts();
     }
 
     private function syncCreatedProducts()
     {
-        /** @var  $lastCreatedProducts Product[]*/
-        $lastCreatedProducts = Product::query()
-            ->where('created_at', '>', $this->getLastDayTime())
-            ->where('foreign_product_id','=', null)
-            ->where('active',1)
-            ->with(['syncPriceOptions', 'images'])->get()->all();
+        /** @var ClientSite[] $clientSites */
+        $clientSites = ClientSite::query()->with('vendors')->get()->all();
 
-        foreach ($lastCreatedProducts as $product) {
-            if ($foreignId = $this->opencartClient->createProduct($product)) {
-                $product->updateLastSync($foreignId);
+        foreach ($clientSites as $clientSite) {
+            $lastCreatedProducts = $this->getLastCratedProductsByClientSite($clientSite);
+            $client = (new ClientSiteFactory($clientSite))->getClient();
+
+            foreach ($lastCreatedProducts as $product) {
+                if ($foreignId = $client->createProduct($product)) {
+                    $clientSite->assignProduct($product, $foreignId);
+                }
+                sleep(self::DELAY_BETWEEN_REQUESTS);
             }
-            sleep(self::DELAY_BETWEEN_REQUESTS);
         }
+    }
+
+    /**
+     * @param ClientSite $clientSite
+     * @return Product[]
+     */
+    private function getLastCratedProductsByClientSite(ClientSite $clientSite)
+    {
+        return Product::query()
+            ->with(['syncPriceOptions', 'images'])
+            ->whereHas('category', function ($query) use ($clientSite) {
+                return $query->whereIn('category.vendor_id', $clientSite->getVendorIds());
+            })
+            ->whereDoesntHave('clientSites', function ($query) use ($clientSite) {
+                return $query->where('client_site.id', '=', $clientSite->id);
+            })
+            ->where('created_at', '>', $this->getLastDayTime())
+            ->where('active',1)
+            ->get()->all();
+    }
+
+    /**
+     * @param ClientSite $clientSite
+     * @return Product[]
+     */
+    private function getLastUpdatedProductsByClientSite(ClientSite $clientSite)
+    {
+        return Product::query()
+            ->with(['syncPriceOptions', 'images'])
+            ->whereHas('clientSites', function ($query) use ($clientSite) {
+                    return $query->where('client_site.id', '=', $clientSite->id);
+                })
+            ->where('updated_at', '>', $this->getLastDayTime())
+            ->where('active',1)
+            ->get()->all();
     }
 
     private function syncUpdatedProducts()
     {
-        /** @var  $lastUpdatedProducts Product[]*/
-        $lastUpdatedProducts = Product::query()
-            ->where('updated_at', '>', $this->getLastDayTime())
-            ->where('foreign_product_id','!=', null)
-            ->where('active',1)
-            ->with('syncPriceOptions')->get()->all();
+        /** @var ClientSite[] $clientSites */
+        $clientSites = ClientSite::query()->with('vendors')->get()->all();
+        foreach ($clientSites as $clientSite) {
 
-        foreach ($lastUpdatedProducts as $lastUpdatedProduct) {
-            if ($this->opencartClient->updateProduct($lastUpdatedProduct)) {
-                $lastUpdatedProduct->updateLastSync();
+            $lastUpdatedProducts = $this->getLastUpdatedProductsByClientSite($clientSite);
+            $client = (new ClientSiteFactory($clientSite))->getClient();
+
+            foreach ($lastUpdatedProducts as $lastUpdatedProduct) {
+                if ($client->updateProduct($lastUpdatedProduct)) {
+                    $clientSite->updateLastSync($lastUpdatedProduct);
+                }
+                sleep(self::DELAY_BETWEEN_REQUESTS);
             }
-            sleep(self::DELAY_BETWEEN_REQUESTS);
         }
     }
 

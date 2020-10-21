@@ -1,9 +1,7 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\ClientSites;
 
-use App\Eloquent\Product\Image;
-use App\Eloquent\Product\PriceOption;
 use App\Eloquent\Product\Product;
 
 /**
@@ -12,7 +10,7 @@ use App\Eloquent\Product\Product;
  * @property string $host
  * @property string $token
  */
-class OpencartClient
+class OpencartClient implements ClientSiteInterface
 {
     public const CREATE_METHOD = 'api/product/add';
     public const UPDATE_METHOD = 'api/product/update';
@@ -26,9 +24,9 @@ class OpencartClient
         $this->token = $token;
     }
 
-    public function createProduct(Product $product)
+    public function createProduct(Product $product): ?string
     {
-        $result = false;
+        $result = null;
         try {
             $response = $this->request(self::CREATE_METHOD, $this->prepareProductToSend($product));
             if (isset($response->success)) {
@@ -41,9 +39,9 @@ class OpencartClient
         return $result;
     }
 
-    public function updateProduct(Product $product)
+    public function updateProduct(Product $product): ?string
     {
-        $result = false;
+        $result = null;
         try {
             $response = $this->request(self::UPDATE_METHOD, $this->prepareProductToSend($product));
             if (isset($response->success)) {

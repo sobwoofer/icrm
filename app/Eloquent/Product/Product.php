@@ -2,8 +2,11 @@
 
 namespace App\Eloquent\Product;
 
+use App\Eloquent\ClientSite;
+use App\Eloquent\ProductToClient;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -22,6 +25,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Category $category
  * @property PriceOption[] $priceOptions
  * @property PriceOption[] $syncPriceOptions
+ * @property ProductToClient[] $productToClients
+ * @property ClientSite[] $clientSites
  * @property Image[] $images
  * @property string $created_at
  * @property string $updated_at
@@ -36,10 +41,16 @@ class Product extends Model
         'image_url',
         'price',
         'article',
-        'foreign_product_id',
-        'last_sync_date',
         'active'
     ];
+
+    /**
+     * @return HasMany
+     */
+    public function productToClients(): HasMany
+    {
+        return $this->hasMany(ProductToClient::class,'product_id', 'id');
+    }
 
     /**
      * @return BelongsTo
@@ -58,6 +69,14 @@ class Product extends Model
     }
 
     /**
+     * @return BelongsToMany
+     */
+    public function clientSites(): BelongsToMany
+    {
+        return $this->belongsToMany(ClientSite::class, 'product_to_client');
+    }
+
+    /**
      * @return HasMany
      */
     public function syncPriceOptions(): HasMany
@@ -65,15 +84,6 @@ class Product extends Model
         return $this->hasMany(PriceOption::class)
             ->with('foreignOption')
             ->where('foreign_option_id', '!=', null);
-    }
-
-    public function updateLastSync($foreignId = null)
-    {
-        if ($foreignId) {
-            $this->foreign_product_id = $foreignId;
-        }
-        $this->last_sync_date = date('Y-m-d h:i:s');
-        $this->save();
     }
 
     /**

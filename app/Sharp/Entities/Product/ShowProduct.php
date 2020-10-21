@@ -49,12 +49,6 @@ class ShowProduct extends SharpShow
              SharpShowTextField::make('price')
                  ->setLabel('price:')
          )->addField(
-             SharpShowTextField::make('last_sync_date')
-                 ->setLabel('last_sync_date:')
-         )->addField(
-             SharpShowTextField::make('foreign_product_id')
-                 ->setLabel('foreign_product_id:')
-         )->addField(
              SharpShowTextField::make('article')
                  ->setLabel('article:')
          )->addField(
@@ -72,6 +66,14 @@ class ShowProduct extends SharpShow
          )->addField(
              SharpShowTextField::make('updated_at')
                  ->setLabel('Updated At:')
+         )->addField(
+             SharpShowEntityListField::make('productToClient', 'productToClient')
+                 ->hideFilterWithValue('product', function($instanceId) {
+                     return $instanceId;
+                 })
+                 ->showEntityState(false)
+                 ->showReorderButton(false)
+                 ->showCreateButton(true)
          )->addField(
              SharpShowEntityListField::make('image', 'image')
                  ->hideFilterWithValue('product', function($instanceId) {
@@ -107,14 +109,16 @@ class ShowProduct extends SharpShow
                   $column->withSingleField('price');
                   $column->withSingleField('url');
                   $column->withSingleField('article');
-                  $column->withSingleField('last_sync_date');
-                  $column->withSingleField('foreign_product_id');
-                  $column->withSingleField('category_id');
-                  $column->withSingleField('description');
-                  $column->withSingleField('created_at');
-                  $column->withSingleField('updated_at');
+
               });
-         })->addEntityListSection('price Options', 'priceOptions')
+             $section->addColumn(6, function(ShowLayoutColumn $column) {
+                 $column->withSingleField('category_id');
+                 $column->withSingleField('description');
+                 $column->withSingleField('created_at');
+                 $column->withSingleField('updated_at');
+             });
+         })->addEntityListSection('Sync Products to Client Site', 'productToClient')
+             ->addEntityListSection('price Options', 'priceOptions')
              ->addEntityListSection('Images', 'image');
     }
 

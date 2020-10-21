@@ -24,7 +24,7 @@ class SyncProducts extends Command
      */
     public function handle(): void
     {
-//        $this->syncUpdatedProducts();
+        $this->syncUpdatedProducts();
         $this->syncCreatedProducts();
     }
 

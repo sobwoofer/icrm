@@ -65,5 +65,7 @@ return [
         ],
 
     ],
+    'php_path' => env('PHP_PATH', 'php'),
+    'cwd_path' => env('CWD_PATH', '/var/www'),
 
 ];

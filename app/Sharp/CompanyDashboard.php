@@ -5,6 +5,7 @@ namespace App\Sharp;
 use App\Eloquent\CrawlStat;
 use App\Eloquent\Product\Product;
 use App\Eloquent\Product\Vendor;
+use App\Eloquent\ProductToClient;
 use Code16\Sharp\Dashboard\DashboardQueryParams;
 use Code16\Sharp\Dashboard\Layout\DashboardLayoutRow;
 use Code16\Sharp\Dashboard\SharpDashboard;
@@ -27,25 +28,31 @@ class CompanyDashboard extends SharpDashboard
             SharpLineGraphWidget::make('capacities')
                 ->setTitle('Crawling progress stat')
         )->addWidget(
-            SharpPanelWidget::make('updatedComefor')
-                ->setInlineTemplate("<h1>{{count}}</h1> Updated Products ComeFor for last week")
-//                ->setLink('product')
+            SharpPanelWidget::make('updatedProducts')
+                ->setInlineTemplate("<h1>{{count}}</h1> Updated Products for last week")
+                ->setLink('product')
         )->addWidget(
-            SharpPanelWidget::make('createdComefor')
-                ->setInlineTemplate("<h1>{{count}}</h1> Created Products ComeFor for last week")
+            SharpPanelWidget::make('createdProducts')
+                ->setInlineTemplate("<h1>{{count}}</h1> Created Products for last week")
+                ->setLink('product')
         )->addWidget(
-            SharpPanelWidget::make('updatedEMM')
-                ->setInlineTemplate("<h1>{{count}}</h1> Updated Products EMM for last week")
+            SharpPanelWidget::make('syncProducts')
+                ->setInlineTemplate("<h1>{{count}}</h1> Sync Products for last week")
         )->addWidget(
-            SharpPanelWidget::make('createdEMM')
-                ->setInlineTemplate("<h1>{{count}}</h1> Created Products EMM for last week")
+            SharpPanelWidget::make('addedToSite')
+                ->setInlineTemplate("<h1>{{count}}</h1> Added Products to Sites for last week")
+        )
+
+        ->addWidget(
+            SharpPanelWidget::make('runCrawling')
+                ->setTemplatePath('dashboard/run-crawling.vue')
+
         )->addWidget(
-            SharpPanelWidget::make('updatedMatrolux')
-                ->setInlineTemplate("<h1>{{count}}</h1> Updated Products Matrolux for last week")
-        )->addWidget(
-            SharpPanelWidget::make('createdMatrolux')
-                ->setInlineTemplate("<h1>{{count}}</h1> Created Products Matrolux for last week")
-        )->addWidget(
+            SharpPanelWidget::make('runSync')
+                ->setTemplatePath('dashboard/run-sync.vue')
+        )
+
+        ->addWidget(
             SharpOrderedListWidget::make('topTravelledSpaceshipModels')
                 ->setTitle('Updated products by last 7 days')
                 ->buildItemLink(function(LinkToEntity $link, $item) {
@@ -64,16 +71,16 @@ class CompanyDashboard extends SharpDashboard
                     ->addWidget(6, 'capacities');
             })
             ->addRow(function(DashboardLayoutRow $row) {
-                $row->addWidget(6, 'createdComefor')
-                    ->addWidget(6, 'updatedComefor');
+                $row->addWidget(6, 'createdProducts')
+                    ->addWidget(6, 'updatedProducts');
             })
             ->addRow(function(DashboardLayoutRow $row) {
-                $row->addWidget(6, 'createdEMM')
-                    ->addWidget(6, 'updatedEMM');
+                $row->addWidget(6, 'addedToSite')
+                    ->addWidget(6, 'syncProducts');
             })
             ->addRow(function(DashboardLayoutRow $row) {
-                $row->addWidget(6, 'createdMatrolux')
-                    ->addWidget(6, 'updatedMatrolux');
+                $row->addWidget(6, 'runSync')
+                    ->addWidget(6, 'runCrawling');
             })
             ->addRow(function(DashboardLayoutRow $row) {
                 $row->addWidget(12, 'topTravelledSpaceshipModels');
@@ -140,49 +147,39 @@ class CompanyDashboard extends SharpDashboard
         );
 
         $this->setPanelData(
-            'updatedComefor', ['count' => Product::query()
+            'updatedProducts', ['count' => Product::query()
                 ->leftJoin('category', 'product.category_id', '=', 'category.id')
-                ->leftJoin('vendor', 'category.vendor_id', '=', 'vendor.id')
                 ->where('product.updated_at', '>', $this->getLastWeekTime())
-                ->where('vendor.slug', Vendor::SLUG_COMEFOR)
                 ->count()]
         )->setPanelData(
-            'createdComefor', ['count' => Product::query()
+            'createdProducts', ['count' => Product::query()
                 ->leftJoin('category', 'product.category_id', '=', 'category.id')
-                ->leftJoin('vendor', 'category.vendor_id', '=', 'vendor.id')
                 ->where('product.created_at', '>', $this->getLastWeekTime())
-                ->where('vendor.slug', Vendor::SLUG_COMEFOR)
                 ->count()]
         );
         $this->setPanelData(
-            'createdEMM', ['count' => Product::query()
-                ->leftJoin('category', 'product.category_id', '=', 'category.id')
-                ->leftJoin('vendor', 'category.vendor_id', '=', 'vendor.id')
-                ->where('product.created_at', '>', $this->getLastWeekTime())
-                ->where('vendor.slug', Vendor::SLUG_EMM)
+            'addedToSite', ['count' => ProductToClient::query()
+                ->where('created_at', '>', $this->getLastWeekTime())
                 ->count()]
         )->setPanelData(
-            'updatedEMM', ['count' => Product::query()
-                ->leftJoin('category', 'product.category_id', '=', 'category.id')
-                ->leftJoin('vendor', 'category.vendor_id', '=', 'vendor.id')
-                ->where('product.updated_at', '>', $this->getLastWeekTime())
-                ->where('vendor.slug', Vendor::SLUG_EMM)
+            'syncProducts', ['count' => ProductToClient::query()
+                ->where('updated_at', '>', $this->getLastWeekTime())
                 ->count()]
         );
+        $lastCrawling = CrawlStat::query()->orderByDesc('created_at')->pluck('created_at')->first();
+
         $this->setPanelData(
-            'createdMatrolux', ['count' => Product::query()
-                ->leftJoin('category', 'product.category_id', '=', 'category.id')
-                ->leftJoin('vendor', 'category.vendor_id', '=', 'vendor.id')
-                ->where('product.created_at', '>', $this->getLastWeekTime())
-                ->where('vendor.name', Vendor::SLUG_MATROLUX)
-                ->count()]
-        )->setPanelData(
-            'updatedMatrolux', ['count' => Product::query()
-                ->leftJoin('category', 'product.category_id', '=', 'category.id')
-                ->leftJoin('vendor', 'category.vendor_id', '=', 'vendor.id')
-                ->where('product.updated_at', '>', $this->getLastWeekTime())
-                ->where('vendor.name', Vendor::SLUG_MATROLUX)
-                ->count()]
+            'runSync', [
+                'lastSync' => (new \DateTime($lastCrawling))->add(new \DateInterval('PT3H'))->format('Y-m-d'),
+                'syncRoute' => route('run-sync')
+            ]
+        );
+
+        $this->setPanelData(
+        'runCrawling', [
+            'lastCrawling' => (new \DateTime($lastCrawling))->format('Y-m-d'),
+            'crawlingRoute' => route('run-crawling')
+            ]
         );
 
         $this->setOrderedListData(

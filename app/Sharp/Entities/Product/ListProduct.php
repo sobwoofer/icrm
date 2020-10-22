@@ -143,7 +143,7 @@ class ListProduct extends SharpEntityList
             /** @var ProductToClient $productToClient */
             foreach ($product->productToClients as $key => $productToClient) {
                 $date = new \DateTime($productToClient->updated_at);
-                $html .= $productToClient->clientSite->slug . ': ' . $date->format('Y-m-d');
+                $html .= $productToClient->clientSite->slug . ': ' . $date->format('Y-m-d') . ' ';
             }
 
             return $html;

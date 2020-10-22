@@ -20,6 +20,12 @@ Route::get('/', function () {
 Route::get('/webhook', 'TelegramController@index');
 Route::post('/webhook', 'TelegramController@index');
 
+Route::group(['prefix' => 'admin'], function () {
+    Route::get('run-crawling','CommandController@runCrawling')->name('run-crawling');
+    Route::get('run-sync','CommandController@runSync')->name('run-sync');
+
+});
+
 //Route::post('/{token}/webhook', function () {
 //    $updates = Api::getWebhookUpdates();
 //

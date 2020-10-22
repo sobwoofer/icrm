@@ -19,6 +19,9 @@ class ClientSiteFactory
             case ClientSite::TYPE_OPENCART:
                 $client = new OpencartClient($clientSite->url, $clientSite->auth_key);
                 break;
+            case ClientSite::TYPE_OTHER:
+                $client = new OpencartClient($clientSite->url, $clientSite->auth_key);
+                break;
             default: throw new \DomainException('cant find client type');
         }
         $this->client = $client;

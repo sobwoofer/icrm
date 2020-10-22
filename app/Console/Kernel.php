@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\CrawlVendors;
 use App\Console\Commands\SyncProducts;
+use App\Console\Commands\TelegramCheckUpdates;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -17,6 +18,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         CrawlVendors::class,
         SyncProducts::class,
+        TelegramCheckUpdates::class,
     ];
 
     /**
@@ -29,6 +31,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('crawl-vendors')->daily()->at('01:00');
         $schedule->command('sync-products')->daily()->at('04:00');
+        $schedule->command('telegram-check-updates')->everyFiveMinutes();
     }
 
     /**

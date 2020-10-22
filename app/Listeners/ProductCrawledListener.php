@@ -7,6 +7,7 @@ use App\Eloquent\ForeignOption;
 use App\Eloquent\Product\Image;
 use App\Eloquent\Product\PriceOption;
 use App\Eloquent\Product\Product;
+use App\Events\CreatedProduct;
 use App\Events\ProductCrawled;
 
 /**
@@ -39,6 +40,7 @@ class ProductCrawledListener
             if ($event->images) {
                 $this->createImages($product, $event->images);
             }
+            event(new CreatedProduct($product->name, $product->url, $product->price));
         }
     }
 

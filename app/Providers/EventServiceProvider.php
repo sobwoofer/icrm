@@ -2,26 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\CreatedProduct;
 use App\Events\ProductCrawled;
-use App\Events\States\AddFilter;
-use App\Events\FirstFilterCrawled;
-use App\Events\States\Hunting;
-use App\Events\States\Info;
-use App\Events\States\RemoveFilter;
-use App\Events\States\RunFilter;
-use App\Events\States\ShowFilters;
-use App\Events\States\Start;
-use App\Events\States\StopFilter;
-use App\Listeners\FirstFilterCrawledListener;
+use App\Listeners\CreatedProductListener;
 use App\Listeners\ProductCrawledListener;
-use App\Listeners\States\AddFilterListener;
-use App\Listeners\States\HuntingListener;
-use App\Listeners\States\InfoListener;
-use App\Listeners\States\RemoveFilterListener;
-use App\Listeners\States\RunFilterListener;
-use App\Listeners\States\ShowFiltersListener;
-use App\Listeners\States\StartListener;
-use App\Listeners\States\StopFilterListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -43,6 +27,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         ProductCrawled::class => [
             ProductCrawledListener::class,
+        ],
+        CreatedProduct::class => [
+            CreatedProductListener::class,
         ],
     ];
 

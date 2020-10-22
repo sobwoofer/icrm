@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 
 use App\Eloquent\ForeignOption;
 use App\Eloquent\Product\PriceOption;
+use App\Events\CreatedProduct;
 use App\Services\Crawlers\ComeforCrawler;
 use App\Services\Crawlers\EmmCrawler;
 use App\Services\Crawlers\MatroluxCrawler;
@@ -80,7 +81,7 @@ class Test extends Command
 
 
 
-
+//        event(new CreatedProduct('matras test', 'url test', '33'));
         $productLink  = 'https://matroluxe.com/ru/matras-topper-futon-5';
         $this->matroluxCrawler->crawlProductByUrl($productLink, 22);
 

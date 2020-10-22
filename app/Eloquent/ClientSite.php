@@ -42,6 +42,7 @@ class ClientSite extends Model
         $productToClient->product_id = $product->id;
         $productToClient->client_site_id = $this->id;
         $productToClient->client_product_id = $foreignProductId;
+        $productToClient->save();
     }
 
     public function updateLastSync(Product $product)

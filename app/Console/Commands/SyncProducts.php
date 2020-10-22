@@ -31,7 +31,10 @@ class SyncProducts extends Command
     private function syncCreatedProducts()
     {
         /** @var ClientSite[] $clientSites */
-        $clientSites = ClientSite::query()->with('vendors')->get()->all();
+        $clientSites = ClientSite::query()
+            ->with('vendors')
+            ->where('active', true)
+            ->get()->all();
 
         foreach ($clientSites as $clientSite) {
             $lastCreatedProducts = $this->getLastCratedProductsByClientSite($clientSite);

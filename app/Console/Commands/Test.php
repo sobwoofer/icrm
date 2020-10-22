@@ -61,19 +61,6 @@ class Test extends Command
      */
     public function handle()
     {
-        $ricePerCell = 0;
-        $totalRices = 0;
-
-        for ($i = 1; $i <= 64; $i++) {
-            $ricePerCell = $i === 1 ? 1 : $ricePerCell * 2;
-            $this->warn('rices in ' . $i . ' cell ' . $ricePerCell . PHP_EOL);
-            $totalRices += $ricePerCell;
-            usleep(100000);
-        }
-
-
-
-        $this->info('total ' . number_format($totalRices, 0, '', ' ') . PHP_EOL);
 
 //        $priceOptions = PriceOption::query()->get()->all();
 //
@@ -94,8 +81,8 @@ class Test extends Command
 
 
 
-//        $productLink  = 'https://matroluxe.com/ru/matras-topper-futon-5';
-//        $this->matroluxCrawler->crawlProductByUrl($productLink, 22);
+        $productLink  = 'https://matroluxe.com/ru/matras-topper-futon-5';
+        $this->matroluxCrawler->crawlProductByUrl($productLink, 22);
 
 
 //        $this->runBot();

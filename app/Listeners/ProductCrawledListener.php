@@ -142,14 +142,15 @@ class ProductCrawledListener
         $product->price = $event->price;
         $product->category_id = $event->categoryId;
 
-        if ($product->getDirty()) {
-            if ($product->id) {
-                $this->getLastCrawlStat()->incrUpdated();
-            } else {
-                $this->getLastCrawlStat()->incrCreated();
-            }
+        if ($product->id && $product->isDirty('price')) {
+            $product->save();
+            $this->getLastCrawlStat()->incrUpdated();
         }
-        $product->save();
+
+        if (!$product->id && $product->getDirty()) {
+            $product->save();
+            $this->getLastCrawlStat()->incrCreated();
+        }
 
         return $product;
     }

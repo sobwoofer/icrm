@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Class Customer
@@ -26,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property PriceOption[] $priceOptions
  * @property PriceOption[] $syncPriceOptions
  * @property ProductToClient[] $productToClients
+ * @property ProductToClient $productToClient
  * @property ClientSite[] $clientSites
  * @property Image[] $images
  * @property string $created_at

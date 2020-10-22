@@ -3,6 +3,7 @@
 namespace App\Services\ClientSites;
 
 use App\Eloquent\Product\Product;
+use App\Eloquent\ProductToClient;
 
 /**
  * Class OpencartClient
@@ -39,11 +40,11 @@ class OpencartClient implements ClientSiteInterface
         return $result;
     }
 
-    public function updateProduct(Product $product): ?string
+    public function updateProduct(Product $product, ProductToClient $productToClient): ?string
     {
         $result = null;
         try {
-            $response = $this->request(self::UPDATE_METHOD, $this->prepareProductToSend($product));
+            $response = $this->request(self::UPDATE_METHOD, $this->prepareProductToSend($product, $productToClient->client_product_id));
             if (isset($response->success)) {
                 $result = true;
             }
@@ -53,10 +54,10 @@ class OpencartClient implements ClientSiteInterface
         return $result;
     }
 
-    private function prepareProductToSend(Product $productOrigin)
+    private function prepareProductToSend(Product $productOrigin, string $clientProductId = null)
     {
         $product = new \stdClass();
-        $product->article = $productOrigin->article;
+        $product->article = $clientProductId ?? '';
         $product->name = $productOrigin->name;
         $product->mainImage = $productOrigin->image_url;
         $product->description = $productOrigin->description;

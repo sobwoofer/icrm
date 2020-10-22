@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Eloquent\ClientSite;
 use App\Eloquent\Product\Product;
+use App\Eloquent\ProductToClient;
 use App\Services\ClientSites\ClientSiteFactory;
 use Illuminate\Console\Command;
 use Log;
@@ -94,12 +95,28 @@ class SyncProducts extends Command
             $client = (new ClientSiteFactory($clientSite))->getClient();
 
             foreach ($lastUpdatedProducts as $lastUpdatedProduct) {
-                if ($client->updateProduct($lastUpdatedProduct)) {
+                $productToClient = $this->getProductToClient($lastUpdatedProduct, $clientSite);
+                if ($client->updateProduct($lastUpdatedProduct, $productToClient)) {
                     $clientSite->updateLastSync($lastUpdatedProduct);
                 }
                 sleep(self::DELAY_BETWEEN_REQUESTS);
             }
         }
+    }
+
+    /**
+     * @param Product $product
+     * @param ClientSite $clientSite
+     * @return ProductToClient
+     */
+    private function getProductToClient(Product $product, ClientSite $clientSite)
+    {
+        /** @var ProductToClient $productToClient */
+        $productToClient = ProductToClient::query()
+            ->where('product_id', $product->id)
+            ->where('client_site_id', $clientSite->id)
+            ->first();
+        return $productToClient;
     }
 
     private function getLastDayTime()

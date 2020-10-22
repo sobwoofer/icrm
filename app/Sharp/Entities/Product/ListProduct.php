@@ -39,7 +39,7 @@ class ListProduct extends SharpEntityList
         )->addDataContainer(
             EntityListDataContainer::make('client_site_id')
                 ->setLabel('client_site_id')
-                ->setSortable()
+//                ->setSortable()
         )->addDataContainer(
             EntityListDataContainer::make('sync_date')
                 ->setLabel('sync_date')

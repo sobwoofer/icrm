@@ -27,7 +27,7 @@ class CommandController extends Controller
             return back()->with('error', $e->getMessage());
         }
 
-//        return back()->with('success', 'Command "sync-products" run successfully');
+        return back()->with('success', 'Command "sync-products" run successfully');
     }
 
     private function runProcess($command)
@@ -38,12 +38,6 @@ class CommandController extends Controller
         $cwdPath = config('filesystems.cwd_path');
         $process = new Process($phpPath . ' artisan ' . $command . ' > /dev/null 2>&1 &', $cwdPath);
         $process->start();
-        $process->wait(function ($type, $buffer) {
-            if (Process::ERR === $type) {
-                echo 'ERR > '.$buffer;
-            } else {
-                echo 'OUT > '.$buffer;
-            }
-        });
+
     }
 }

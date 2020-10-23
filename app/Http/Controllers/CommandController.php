@@ -37,7 +37,6 @@ class CommandController extends Controller
         $phpPath = config('filesystems.php_path');
         $cwdPath = config('filesystems.cwd_path');
         $process = new Process($phpPath . ' artisan ' . $command . ' > /dev/null 2>&1 &', $cwdPath);
-        $process->start();
-
+        $process->run();
     }
 }

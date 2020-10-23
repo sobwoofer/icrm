@@ -17,7 +17,7 @@ class SyncProducts extends Command
 {
     private const DELAY_BETWEEN_REQUESTS = 2; //sec
 
-    protected $signature = 'sync-products';
+    protected $signature = 'sync-products {productId?} {clientSiteId?}';
     protected $description = 'Command description';
 
     /**
@@ -26,20 +26,25 @@ class SyncProducts extends Command
     public function handle(): void
     {
         Log::info('start sync console command');
-        $this->syncUpdatedProducts();
-        $this->syncCreatedProducts();
+        $this->syncUpdatedProducts($this->argument('productId'), $this->argument('clientSiteId'));
+        $this->syncCreatedProducts($this->argument('productId'), $this->argument('clientSiteId'));
     }
 
-    private function syncCreatedProducts()
+    private function syncCreatedProducts(?int $productId, ?int $clientSiteId)
     {
-        /** @var ClientSite[] $clientSites */
-        $clientSites = ClientSite::query()
+        $query = ClientSite::query()
             ->with('vendors')
-            ->where('active', true)
-            ->get()->all();
+            ->where('active', true);
+
+        if ($clientSiteId) {
+            $query->where('id', $clientSiteId);
+        }
+
+        /** @var ClientSite[] $clientSites */
+        $clientSites = $query->get()->all();
 
         foreach ($clientSites as $clientSite) {
-            $lastCreatedProducts = $this->getLastCratedProductsByClientSite($clientSite);
+            $lastCreatedProducts = $this->getLastCratedProductsByClientSite($clientSite, $productId);
             $client = (new ClientSiteFactory($clientSite))->getClient();
 
             foreach ($lastCreatedProducts as $product) {
@@ -51,48 +56,19 @@ class SyncProducts extends Command
         }
     }
 
-    /**
-     * @param ClientSite $clientSite
-     * @return Product[]
-     */
-    private function getLastCratedProductsByClientSite(ClientSite $clientSite)
-    {
-        return Product::query()
-            ->with(['syncPriceOptions', 'images'])
-            ->whereHas('category', function ($query) use ($clientSite) {
-                return $query->whereIn('category.vendor_id', $clientSite->getVendorIds());
-            })
-            ->whereDoesntHave('clientSites', function ($query) use ($clientSite) {
-                return $query->where('client_site.id', '=', $clientSite->id);
-            })
-            ->where('created_at', '>', $this->getLastDayTime())
-            ->where('active',1)
-            ->get()->all();
-    }
-
-    /**
-     * @param ClientSite $clientSite
-     * @return Product[]
-     */
-    private function getLastUpdatedProductsByClientSite(ClientSite $clientSite)
-    {
-        return Product::query()
-            ->with(['syncPriceOptions', 'images'])
-            ->whereHas('clientSites', function ($query) use ($clientSite) {
-                    return $query->where('client_site.id', '=', $clientSite->id);
-                })
-            ->where('updated_at', '>', $this->getLastDayTime())
-            ->where('active',1)
-            ->get()->all();
-    }
-
-    private function syncUpdatedProducts()
+    private function syncUpdatedProducts(?int $productId, ?int $clientSiteId)
     {
         /** @var ClientSite[] $clientSites */
-        $clientSites = ClientSite::query()->with('vendors')->get()->all();
-        foreach ($clientSites as $clientSite) {
+        $query = ClientSite::query()->with('vendors');
 
-            $lastUpdatedProducts = $this->getLastUpdatedProductsByClientSite($clientSite);
+        if ($clientSiteId) {
+            $query->where('id', $clientSiteId);
+        }
+        /** @var ClientSite[] $clientSites */
+        $clientSites = $query->get()->all();
+
+        foreach ($clientSites as $clientSite) {
+            $lastUpdatedProducts = $this->getLastUpdatedProductsByClientSite($clientSite, $productId);
             $client = (new ClientSiteFactory($clientSite))->getClient();
 
             foreach ($lastUpdatedProducts as $lastUpdatedProduct) {
@@ -103,6 +79,55 @@ class SyncProducts extends Command
                 sleep(self::DELAY_BETWEEN_REQUESTS);
             }
         }
+    }
+
+    /**
+     * @param ClientSite $clientSite
+     * @param int|null $productId
+     * @return Product[]
+     */
+    private function getLastCratedProductsByClientSite(ClientSite $clientSite, ?int $productId)
+    {
+        $query = Product::query()
+            ->with(['syncPriceOptions', 'images'])
+            ->whereHas('category', function ($query) use ($clientSite) {
+                return $query->whereIn('category.vendor_id', $clientSite->getVendorIds());
+            })
+            ->whereDoesntHave('clientSites', function ($query) use ($clientSite) {
+                return $query->where('client_site.id', '=', $clientSite->id);
+            })
+            ->where('active',1);
+
+        if (!$productId) {
+            $query->where('created_at', '>', $this->getLastDayTime());
+        } else {
+            $query->where('id', $productId);
+        }
+
+        return $query->get()->all();
+    }
+
+    /**
+     * @param int|null $productId
+     * @param ClientSite $clientSite
+     * @return Product[]
+     */
+    private function getLastUpdatedProductsByClientSite(ClientSite $clientSite, ?int $productId)
+    {
+        $query =  Product::query()
+            ->with(['syncPriceOptions', 'images'])
+            ->whereHas('clientSites', function ($query) use ($clientSite) {
+                    return $query->where('client_site.id', '=', $clientSite->id);
+                })
+            ->where('active',1);
+
+        if (!$productId) {
+            $query->where('updated_at', '>', $this->getLastDayTime());
+        } else {
+            $query->where('id', $productId);
+        }
+
+        return $query->get()->all();
     }
 
     /**

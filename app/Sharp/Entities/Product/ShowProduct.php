@@ -2,6 +2,7 @@
 
 namespace App\Sharp\Entities\Product;
 
+use App\Eloquent\ClientSite;
 use App\Eloquent\Product\Product;
 use Code16\Sharp\Show\Fields\SharpShowEntityListField;
 use Code16\Sharp\Show\Fields\SharpShowPictureField;
@@ -67,6 +68,8 @@ class ShowProduct extends SharpShow
              SharpShowTextField::make('updated_at')
                  ->setLabel('Updated At:')
          )->addField(
+             SharpShowTextField::make('syncButtons')
+         )->addField(
              SharpShowEntityListField::make('productToClient', 'productToClient')
                  ->hideFilterWithValue('product', function($instanceId) {
                      return $instanceId;
@@ -117,13 +120,29 @@ class ShowProduct extends SharpShow
                  $column->withSingleField('created_at');
                  $column->withSingleField('updated_at');
              });
-         })->addEntityListSection('Sync Products to Client Site', 'productToClient')
+         })
+             ->addSection('Sync Product Now', function(ShowLayoutSection $section) {
+                 $section->addColumn(12, function(ShowLayoutColumn $column) {
+                     $column->withSingleField('syncButtons');
+                 });
+         })
+             ->addEntityListSection('Product to Site assignments', 'productToClient')
              ->addEntityListSection('price Options', 'priceOptions')
              ->addEntityListSection('Images', 'image');
     }
 
     function buildShowConfig()
     {
-        //
+        $this->setCustomTransformer('syncButtons', function($items, Product $product) {
+            $html = 'Product will create if doesn\'t assign to site, or will update if has assignment <br>';
+            $clientSites = $product->category->vendor->clientSites;
+
+            foreach ($clientSites as $clientSite) {
+                $route = route('run-sync', ['product_id' => $product->id, 'client_site_id' => $clientSite->id]);
+                $html .= '<a href="' . $route . '" class="SharpButton SharpButton--accent">Sync with ' . $clientSite->slug  . '</a>';
+            }
+
+            return $html;
+        });
     }
 }

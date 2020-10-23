@@ -20,10 +20,16 @@ class CommandController extends Controller
         return back()->with('success', 'Command "crawl-vendors" run successfully');
     }
 
-    public function runSync()
+    public function runSync(string $productId = '', string $siteClientId = '')
     {
         try {
-            $this->runProcess('sync-products');
+            $params = '';
+            if ($siteClientId) {
+                $params = ' ' . $productId . ' ' . $siteClientId;
+            } elseif ($productId) {
+                $params = ' ' . $productId;
+            }
+            $this->runProcess('sync-products', $params);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return back()->with('error', $e->getMessage());
@@ -32,14 +38,14 @@ class CommandController extends Controller
         return back()->with('success', 'Command "sync-products" run successfully');
     }
 
-    private function runProcess($command)
+    private function runProcess($command, string $params)
     {
         Log::info('started runProcess in controller'. $command);
 
         $phpPath = config('filesystems.php_path');
         $cwdPath = config('filesystems.cwd_path');
         $process = new Process(
-            $phpPath . ' artisan ' . $command . ' > /dev/null 2>&1 &',
+            $phpPath . ' artisan ' . $command . $params . ' > /dev/null 2>&1 &',
             $cwdPath,
             null,
             null,

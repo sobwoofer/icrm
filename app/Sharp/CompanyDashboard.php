@@ -172,14 +172,15 @@ class CompanyDashboard extends SharpDashboard
 
         $this->setPanelData(
             'runSync', [
-                'lastSync' => (new \DateTime($lastCrawling))->add(new \DateInterval('PT3H'))->format('Y-m-d'),
+                'lastSync' => (new \DateTime($lastCrawling))->add(new \DateInterval('PT3H'))
+                    ->format('Y-m-d H:i:s'),
                 'syncRoute' => route('run-sync')
             ]
         );
 
         $this->setPanelData(
         'runCrawling', [
-            'lastCrawling' => (new \DateTime($lastCrawling))->format('Y-m-d'),
+            'lastCrawling' => (new \DateTime($lastCrawling))->format('Y-m-d H:i:s'),
             'crawlingRoute' => route('run-crawling')
             ]
         );

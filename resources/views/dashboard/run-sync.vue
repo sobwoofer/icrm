@@ -1,5 +1,5 @@
 <div>
-<p>Last sync ALL<b> {{ lastSync }}</b></p>
+<p>Last sync <b> {{ lastSync }}</b></p>
 </div>
 
-<a v-bind:href="syncRoute" class="SharpButton SharpButton--accent">Run Sync</a>
+<a v-bind:href="syncRoute" class="SharpButton SharpButton--accent">Run Sync ALL</a>

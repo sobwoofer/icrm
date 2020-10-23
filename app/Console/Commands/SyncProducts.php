@@ -25,7 +25,8 @@ class SyncProducts extends Command
      */
     public function handle(): void
     {
-        Log::info('start sync console command');
+        Log::info('start sync console command. productID:' . $this->argument('productId')
+                    . ' clientSiteId:' . $this->argument('clientSiteId'));
         $this->syncUpdatedProducts($this->argument('productId'), $this->argument('clientSiteId'));
         $this->syncCreatedProducts($this->argument('productId'), $this->argument('clientSiteId'));
     }

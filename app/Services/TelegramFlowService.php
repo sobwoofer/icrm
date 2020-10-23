@@ -36,7 +36,7 @@ class TelegramFlowService
 
             $this->telegram->sendMessage([
                 'chat_id' => $customer->chat_id,
-                'text' => 'Ви успішно підписані на розсилку порнухи' . PHP_EOL . 'Гарного дня.',
+                'text' => 'Ви успішно підписані на розсилку нових товарів кравлера' . PHP_EOL . 'Гарного дня.',
             ]);
         }
 

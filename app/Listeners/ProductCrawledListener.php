@@ -9,6 +9,7 @@ use App\Eloquent\Product\PriceOption;
 use App\Eloquent\Product\Product;
 use App\Events\CreatedProduct;
 use App\Events\ProductCrawled;
+use Log;
 
 /**
  * Class ProductCrawledListener
@@ -146,11 +147,13 @@ class ProductCrawledListener
 
         if ($product->id && $product->isDirty('price')) {
             $product->save();
+            Log::info('Updated price for product id ' . $product->id);
             $this->getLastCrawlStat()->incrUpdated();
         }
 
         if (!$product->id && $product->getDirty()) {
             $product->save();
+            Log::info('Created new product id ' . $product->id);
             $this->getLastCrawlStat()->incrCreated();
         }
 

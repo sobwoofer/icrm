@@ -9,15 +9,16 @@
     "license": "MIT",
     "require": {
         "php": "^7.2",
+        "ext-json": "*",
         "code16/sharp": "^4.2",
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "^6.5",
         "irazasyed/telegram-bot-sdk": "^2.0",
         "laravel/framework": "^6.2",
         "laravel/tinker": "^2.0",
+        "monolog/monolog": "^2.1",
         "symfony/dom-crawler": "^4.3",
-        "symfony/panther": "^0.7.1",
-        "ext-json": "*"
+        "symfony/panther": "^0.7.1"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.6",

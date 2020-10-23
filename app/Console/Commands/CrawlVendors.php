@@ -49,7 +49,7 @@ class CrawlVendors extends Command
 
         /** @var Vendor $vendor */
         foreach ($vendors as $vendor) {
-            $this->log($vendor->name, 'start');
+            $this->log($vendor->name, 'start crawling');
 
             $crawledProducts = 0;
             switch ($vendor->slug) {

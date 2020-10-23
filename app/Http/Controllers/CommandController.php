@@ -13,6 +13,7 @@ class CommandController extends Controller
         try {
             $this->runProcess('crawl-vendors');
         } catch (Exception $e) {
+            Log::error($e->getMessage());
             return back()->with('error', $e->getMessage());
         }
 
@@ -24,6 +25,7 @@ class CommandController extends Controller
         try {
             $this->runProcess('sync-products');
         } catch (Exception $e) {
+            Log::error($e->getMessage());
             return back()->with('error', $e->getMessage());
         }
 
@@ -36,7 +38,13 @@ class CommandController extends Controller
 
         $phpPath = config('filesystems.php_path');
         $cwdPath = config('filesystems.cwd_path');
-        $process = new Process($phpPath . ' artisan ' . $command . ' > /dev/null 2>&1 &', $cwdPath);
+        $process = new Process(
+            $phpPath . ' artisan ' . $command . ' > /dev/null 2>&1 &',
+            $cwdPath,
+            null,
+            null,
+            3600 // one hour
+        );
         $process->run();
     }
 }

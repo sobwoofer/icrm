@@ -4,6 +4,7 @@ namespace App\Services\ClientSites;
 
 use App\Eloquent\Product\Product;
 use App\Eloquent\ProductToClient;
+use Log;
 
 /**
  * Class OpencartClient
@@ -34,7 +35,10 @@ class OpencartClient implements ClientSiteInterface
                 $result = $response->success->product_id;
             }
         } catch (\Exception $e) {
-
+            Log::error('Site API returned error while create', [
+                'error' => $e->getMessage(),
+                'product_id'=> $product->id
+            ]);
         }
 
         return $result;
@@ -49,7 +53,10 @@ class OpencartClient implements ClientSiteInterface
                 $result = true;
             }
         } catch (\Exception $e) {
-
+            Log::error('Site API returned error while update', [
+                'error' => $e->getMessage(),
+                'product_id'=> $product->id
+            ]);
         }
         return $result;
     }

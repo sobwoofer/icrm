@@ -94,6 +94,11 @@ return [
             'icon' => 'fa-superpowers',
             'entity' => 'clientSite'
         ],
+        [
+            'label' => 'Logs',
+            'icon' => 'fas fa-globe',
+            'url' => '/admin/logs'
+        ],
     ],
     'uploads' => [
         'thumbnails_disk' => env('FILESYSTEM_DRIVER', 'local'),

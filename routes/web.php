@@ -23,6 +23,7 @@ Route::post('/webhook', 'TelegramController@index');
 Route::group(['prefix' => 'admin'], function () {
     Route::get('run-crawling','CommandController@runCrawling')->name('run-crawling');
     Route::get('run-sync','CommandController@runSync')->name('run-sync');
+    Route::get('logs','LogController@index')->name('logs');
 
 });
 

@@ -98,8 +98,8 @@ class CompanyDashboard extends SharpDashboard
         foreach ($crawlStats as $crawlStat) {
             $createdAt = (new \DateTime($crawlStat->created_at))->format('Y-m-d');
             $updatedAt = (new \DateTime($crawlStat->created_at))->format('Y-m-d');
-            $createdGraph[(string)$createdAt] = $createdAt;
-            $updatedGraph[(string)$updatedAt] = $updatedAt;
+            $createdGraph[(string)$createdAt] = $crawlStat->created;
+            $updatedGraph[(string)$updatedAt] = $crawlStat->updated;
         }
 
 

@@ -45,12 +45,13 @@ class EmmCrawler extends CrawlerAbstract
         return array_merge($nextProductLinks, $productLinks);
     }
 
-    protected function crawlProductByUrl(string $url, int $categoryId): void
+    public function crawlProductByUrl(string $url, int $categoryId): void
     {
         $crawler = $this->crawlUrl($url);
 
         $name = trim(str_replace('\n', '', $crawler->filter('h1.content__title')->text()));
-        $price = str_replace(' ', '', $crawler->filter('.product-intro .product-price__item-value')->text());
+        $price = str_replace(' ', '', $crawler->filter('.product-intro .product-price__main .product-price__item-value')->text());
+
         $description = $crawler->filter('.product-fullinfo .product-fullinfo__inner')->first()->html();
         $imageUrl = urldecode($crawler->filter('#fotoplusprice .product-photo__item--lg')->attr('href'));
         $article = $crawler->filter('#h1headprod span span')->text();

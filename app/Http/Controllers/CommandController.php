@@ -11,7 +11,7 @@ class CommandController extends Controller
     public function runCrawling()
     {
         try {
-            $this->runProcess('crawl-vendors');
+            $this->runProcess('crawl-vendors', '');
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return back()->with('error', $e->getMessage());

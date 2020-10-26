@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Eloquent\CrawlStat;
 use App\Eloquent\Product\Vendor;
 use App\Services\Crawlers\ComeforCrawler;
+use App\Services\Crawlers\DiplomatCrawler;
 use App\Services\Crawlers\EmmCrawler;
 use App\Services\Crawlers\MatroluxCrawler;
 use Illuminate\Console\Command;
@@ -16,6 +17,7 @@ use Log;
  * @property ComeforCrawler $comeforCrawler
  * @property EmmCrawler $emmCrawler
  * @property MatroluxCrawler $matroluxCrawler
+ * @property DiplomatCrawler $diplomatCrawler
  */
 class CrawlVendors extends Command
 {
@@ -26,16 +28,19 @@ class CrawlVendors extends Command
     private $comeforCrawler;
     private $emmCrawler;
     private $matroluxCrawler;
+    private $diplomatCrawler;
 
     public function __construct(
         ComeforCrawler $comeforCrawler,
         EmmCrawler $emmCrawler,
-        MatroluxCrawler $matroluxCrawler
+        MatroluxCrawler $matroluxCrawler,
+        DiplomatCrawler $diplomatCrawler
     )
     {
         $this->comeforCrawler = $comeforCrawler;
         $this->emmCrawler = $emmCrawler;
         $this->matroluxCrawler = $matroluxCrawler;
+        $this->diplomatCrawler = $diplomatCrawler;
         parent::__construct();
     }
 
@@ -61,6 +66,9 @@ class CrawlVendors extends Command
                     break;
                 case Vendor::SLUG_MATROLUX:
                     $crawledProducts = $this->matroluxCrawler->crawl($vendor->categories);
+                    break;
+                case Vendor::SLUG_DIPLOMAT:
+                    $crawledProducts = $this->diplomatCrawler->crawl($vendor->categories);
                     break;
             }
 

@@ -24,6 +24,7 @@ class Vendor extends Model
     public const SLUG_COMEFOR = 'comefor';
     public const SLUG_EMM = 'emm';
     public const SLUG_MATROLUX = 'matrolux';
+    public const SLUG_DIPLOMAT = 'diplomat';
 
     protected $table = 'vendor';
     protected $fillable = ['name', 'slug', 'site_url'];

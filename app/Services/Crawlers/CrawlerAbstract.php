@@ -16,7 +16,7 @@ use Log;
  */
 class CrawlerAbstract
 {
-    private const SLEEP_BETWEEN_REQUESTS = 1;
+    private const SLEEP_BETWEEN_REQUESTS = 2;
 
     private $proxyService;
 

@@ -22,7 +22,7 @@ use Log;
 class CrawlVendors extends Command
 {
 
-    protected $signature = 'crawl-vendors';
+    protected $signature = 'crawl-vendors {vendor_slug?}';
     protected $description = 'Command description';
 
     private $comeforCrawler;
@@ -49,7 +49,12 @@ class CrawlVendors extends Command
      */
     public function handle(): void
     {
-        $vendors = Vendor::query()->get();
+        $query = Vendor::query();
+
+        if ($vendorSlug = $this->argument('vendor_slug')) {
+            $query->where('slug', $vendorSlug);
+        }
+        $vendors = $query->get();
         $crawlStat = CrawlStat::create();
 
         /** @var Vendor $vendor */

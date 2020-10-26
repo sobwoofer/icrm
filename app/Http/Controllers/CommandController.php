@@ -49,8 +49,8 @@ class CommandController extends Controller
             $cwdPath,
             null,
             null,
-            7200 // one hour
+            7200 // 2 hours
         );
-        $process->start();
+        $process->run();
     }
 }

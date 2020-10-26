@@ -82,8 +82,8 @@ class Test extends Command
 
 
 //        event(new CreatedProduct('matras test', 'url test', '33'));
-        $productLink  = 'https://emm.com.ua/matras-optima-fitness';
-        $this->emmCrawler->crawlProductByUrl($productLink, 12);
+        $productLink  = 'https://matroluxe.com/ru/shkaf-kupe-classic-3-dveri-bavaria';
+        $this->matroluxCrawler->crawlProductByUrl($productLink, 12);
 
 
 //        $this->runBot();

@@ -61,11 +61,13 @@ class MatroluxCrawler extends CrawlerAbstract
         });
 
         //options manipulations
-        $priceOptions = $crawler->filter('#configurableParams select#size option, #configurableParams select.select-param option')->each(function (Crawler $node) {
-            $name = trim($node->text());
-            $price = $node->attr('data-price');
-            return ['name' => $name, 'price' => $price];
-        });
+        $priceOptions = $crawler
+            ->filter('#configurableParams select#size option, #configurableParams select.select-param option')
+            ->each(function (Crawler $node) {
+                $name = trim($node->text());
+                $price = $node->attr('data-price');
+                return ['name' => $name, 'price' => $price];
+         });
 
         $optionPricesNull = 0;
         foreach ($priceOptions as $priceOption) {
@@ -82,6 +84,9 @@ class MatroluxCrawler extends CrawlerAbstract
                 $price = trim(str_replace(['грн', ' '],'', $node->text()));
                 return ['name' => $priceOptions[$i]['name'], 'price' => $price];
             });
+        } elseif ($optionsWithoutPrice && !$priceVariantsExists) {
+            \Log::error('all options without prices url ' . $url);
+            $priceOptions = [];
         }
         //options manipulations
 

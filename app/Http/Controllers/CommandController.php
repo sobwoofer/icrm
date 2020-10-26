@@ -51,6 +51,6 @@ class CommandController extends Controller
             null,
             7200 // one hour
         );
-        $process->run();
+        $process->start();
     }
 }

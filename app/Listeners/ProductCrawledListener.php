@@ -65,6 +65,7 @@ class ProductCrawledListener
      */
     private function updatePriceOptions(Product $product, array $eventPriceOptions)
     {
+        $updatedSomeOptions = false;
         foreach ($eventPriceOptions as $priceOptionArray) {
             $foundOption = false;
             foreach ($product->priceOptions as $priceOption) {
@@ -72,7 +73,7 @@ class ProductCrawledListener
                     $priceOption->price = $priceOptionArray['price'];
                     if ($priceOption->isDirty()) {
                         $priceOption->save();
-                        Log::info('Updated price_option  ' . $priceOption->name . ' for product id ' . $product->id);
+                        $updatedSomeOptions = true;
                     }
                     $foundOption = true;
                     break;
@@ -81,6 +82,9 @@ class ProductCrawledListener
             if (!$foundOption) {
                 $this->createPriceOptions($product, [$priceOptionArray]);
             }
+        }
+        if ($updatedSomeOptions) {
+            Log::info('Updated price_options for product id ' . $product->id);
         }
     }
 

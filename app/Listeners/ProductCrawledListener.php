@@ -70,7 +70,10 @@ class ProductCrawledListener
             foreach ($product->priceOptions as $priceOption) {
                 if ($priceOptionArray['name'] === $priceOption->name) {
                     $priceOption->price = $priceOptionArray['price'];
-                    $priceOption->save();
+                    if ($priceOption->isDirty()) {
+                        $priceOption->save();
+                        Log::info('Updated price_option  ' . $priceOption->name . ' for product id ' . $product->id);
+                    }
                     $foundOption = true;
                     break;
                 }

@@ -57,8 +57,8 @@ class ComeforCrawler extends CrawlerAbstract
     {
         $crawler = $this->crawlUrl($categoryUrl);
 
-        $productLinks = $crawler->filter('.product-thumb')->each(function (Crawler $node, $i) {
-            return $node->filter('h4 a')->attr('href');
+        $productLinks = $crawler->filter('.product-thumb .caption')->each(function (Crawler $node, $i) {
+            return $node->filter('a')->attr('href');
         });
 
         if ($crawler->filter('.pagination li a')->count() && $firstPage) {

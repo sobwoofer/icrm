@@ -10,6 +10,7 @@ use App\Services\Crawlers\EmmCrawler;
 use App\Services\Crawlers\MatroluxCrawler;
 use Illuminate\Console\Command;
 use Log;
+use Exception;
 
 /**
  * Class CrawlVendors
@@ -60,26 +61,27 @@ class CrawlVendors extends Command
         /** @var Vendor $vendor */
         foreach ($vendors as $vendor) {
             $this->log($vendor->name, 'start crawling');
-
-            $crawledProducts = 0;
-            switch ($vendor->slug) {
-                case Vendor::SLUG_COMEFOR:
-                    $crawledProducts = $this->comeforCrawler->crawl($vendor->categories);
-                    break;
-                case Vendor::SLUG_EMM:
-                    $crawledProducts = $this->emmCrawler->crawl($vendor->categories);
-                    break;
-                case Vendor::SLUG_MATROLUX:
-                    $crawledProducts = $this->matroluxCrawler->crawl($vendor->categories);
-                    break;
-                case Vendor::SLUG_DIPLOMAT:
-                    $crawledProducts = $this->diplomatCrawler->crawl($vendor->categories);
-                    break;
+            try {
+                $crawledProducts = 0;
+                switch ($vendor->slug) {
+                    case Vendor::SLUG_COMEFOR:
+                        $crawledProducts = $this->comeforCrawler->crawl($vendor->categories);
+                        break;
+                    case Vendor::SLUG_EMM:
+                        $crawledProducts = $this->emmCrawler->crawl($vendor->categories);
+                        break;
+                    case Vendor::SLUG_MATROLUX:
+                        $crawledProducts = $this->matroluxCrawler->crawl($vendor->categories);
+                        break;
+                    case Vendor::SLUG_DIPLOMAT:
+                        $crawledProducts = $this->diplomatCrawler->crawl($vendor->categories);
+                        break;
+                }
+                $crawlStat->incrCrawled($crawledProducts);
+                $this->log($vendor->name, 'crawled');
+            } catch (Exception $e) {
+                Log::error('cant_parse_vendor: ' . $vendor->slug . ' | ' . $e->getMessage());
             }
-
-            $crawlStat->incrCrawled($crawledProducts);
-
-            $this->log($vendor->name, 'crawled');
         }
     }
 

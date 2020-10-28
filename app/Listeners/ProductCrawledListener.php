@@ -25,7 +25,7 @@ class ProductCrawledListener
     public function handle(ProductCrawled $event)
     {
         /** @var Product $product */
-        if ($product = $this->getProduct($event->article)) {
+        if ($product = $this->getProduct($event->article, $event->categoryId)) {
             $this->fillAndSaveProduct($product, $event);
 
             if ($event->priceOptions) {
@@ -167,8 +167,11 @@ class ProductCrawledListener
         return $product;
     }
 
-    private function getProduct(string $article)
+    private function getProduct(string $article, int $categoryId)
     {
-        return Product::query()->where('article', $article)->first();
+        return Product::query()
+            ->where('article', $article)
+            ->where('category_id', $categoryId)
+            ->first();
     }
 }

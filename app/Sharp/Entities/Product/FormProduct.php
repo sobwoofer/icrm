@@ -3,10 +3,12 @@
 namespace App\Sharp\Entities\Product;
 
 use App\Eloquent\Product\Product;
+use App\User;
 use Code16\Sharp\Form\Eloquent\WithSharpFormEloquentUpdater;
 use Code16\Sharp\Form\Fields\SharpFormSelectField;
 use Code16\Sharp\Form\Layout\FormLayoutColumn;
 use Code16\Sharp\Form\SharpForm;
+use Auth;
 
 class FormProduct extends SharpForm
 {
@@ -42,6 +44,7 @@ class FormProduct extends SharpForm
      */
     public function delete($id)
     {
+        \Log::info('deleted product id' . $id . ' by user ' .Auth::user()->name);
         Product::query()->findOrFail($id)->find($id)->delete();
     }
 

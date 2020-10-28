@@ -41,7 +41,7 @@ class ProductCrawledListener
             if ($event->images) {
                 $this->createImages($product, $event->images);
             }
-            event(new CreatedProduct($product->name, $product->url, $product->price));
+            event(new CreatedProduct($product));
         }
     }
 

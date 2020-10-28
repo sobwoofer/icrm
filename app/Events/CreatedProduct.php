@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Eloquent\Product\Product;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -10,23 +11,17 @@ use Illuminate\Queue\SerializesModels;
 /**
  * Class FreshItemsFound
  * @package App\Events
- * @property string $name
- * @property string $url
- * @property float $price
+ * @property Product $product
  */
 class CreatedProduct
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $name;
-    public $url;
-    public $price;
+    public $product;
 
-    public function __construct(string $name, string $url, float $price)
+    public function __construct(Product $product)
     {
-        $this->name = $name;
-        $this->url = $url;
-        $this->price = $price;
+        $this->product = $product;
     }
 
     /**

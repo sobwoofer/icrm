@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 
 use App\Eloquent\ForeignOption;
 use App\Eloquent\Product\PriceOption;
+use App\Eloquent\Product\Product;
 use App\Events\CreatedProduct;
 use App\Services\Crawlers\ComeforCrawler;
 use App\Services\Crawlers\EmmCrawler;
@@ -79,7 +80,10 @@ class Test extends Command
 //            $this->info('done option id: ' . $priceOption->id . PHP_EOL);
 
 
+        /** @var Product $product */
+        $product = Product::query()->first();
 
+        event(new CreatedProduct($product));
 
 //        event(new CreatedProduct('matras test', 'url test', '33'));
         $productLink  = 'https://matroluxe.com/ru/shkaf-kupe-classic-3-dveri-bavaria';

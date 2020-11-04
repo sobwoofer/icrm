@@ -42,7 +42,7 @@ class CreatedProductListener
 
         $sitesMessage = '';
         foreach ($clientSites as $clientSite) {
-            $sitesMessage .=  ' ' . $clientSite->url;
+            $sitesMessage .=  ' ' . $clientSite->slug;
         }
 
         $customers = Customer::all();

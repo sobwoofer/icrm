@@ -21,21 +21,22 @@ class ComeforCrawler extends CrawlerAbstract
     {
         $crawler = $this->crawlUrl($url);
 
-        $name = $crawler->filter('.product-title h1')->text();
+        $name = trim(str_replace(PHP_EOL, '', $crawler->filter('.product-title h1')->text()));
         $priceText = $crawler->filter('.product-container li.price-text span.price-number')->text();
         $description = $crawler->filter('#tab-description')->html();
         $imageUrl = urldecode($crawler->filter('.main--img')->attr('href'));
         $articleText = $crawler->filter('.vendor')->text();
 
-        $article = str_replace('Код товара: ', '', $articleText);
-        $price = str_replace('грн', '', $priceText);
+        $article = trim(str_replace(['Код товара:', PHP_EOL], '', $articleText));
+
+        $price = trim(str_replace(['грн', PHP_EOL], '', $priceText));
 
         $images = $crawler->filter('#owl-image_products .item')->each(function (Crawler $node, $i) {
             return urldecode($node->filter('a')->attr('href'));
         });
 
         $priceOptions = $crawler->filter('#product .form-group select option')->each(function (Crawler $node) {
-            $name = $node->filter('.name_option')->text();
+            $name = trim(str_replace(PHP_EOL, '', $node->filter('.name_option')->text()));
             foreach ($node->filter('span') as $children) {
                 $children->parentNode->removeChild($children);
             }

@@ -22,6 +22,10 @@ class TelegramFlowService
 
     public function processUpdate(Update $update)
     {
+        if (!$update->getMessage()) {
+            \Log::alert('telegram update has no messages', ['update_id' => $update->getUpdateId()]);
+            return;
+        }
         $message = $update->getMessage();
         $chat = $message->getChat();
         $chatId = $message->getChat()->getId();

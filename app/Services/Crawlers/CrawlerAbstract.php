@@ -38,7 +38,6 @@ class CrawlerAbstract
             $productLinks = $this->getProductLinksByCategoryUrl($category->url);
 
             foreach ($productLinks as $productLink) {
-                $productLink = 'https://come-for.com/product/matras-come-for-delajt-soft/'; //todo test
                 try {
                     $this->crawlProductByUrl($productLink, $category->id);
                     $crawled++;
